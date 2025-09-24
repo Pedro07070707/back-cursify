@@ -1,6 +1,7 @@
 package com.itb.inf2cm.CursiFy.controller;
 
 import com.itb.inf2cm.CursiFy.model.entity.Curso;
+import com.itb.inf2cm.CursiFy.model.services.CursoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
