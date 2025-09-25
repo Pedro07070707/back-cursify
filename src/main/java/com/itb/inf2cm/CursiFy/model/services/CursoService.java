@@ -28,13 +28,12 @@ public class CursoService {
     }
 
     public Curso update(Long id, Curso curso) {
-        Curso produtoExistente = findById(id);
+        Curso cursoExistente = findById(id);
         cursoExistente.setNome(curso.getNome());
         cursoExistente.setDescricao(curso.getDescricao());
-        curso.setTipo(curso.getTipo());
-        cursoExistente.setQuantidadeEstoque(curso.getQuantidadeEstoque());
-        cursoExistente.setValorCompra(curso.getValorCompra());
-        cursoExistente.setValorVenda(curso.getValorVenda());
+        curso.setCargaHoraria(curso.getCargaHoraria());
+        cursoExistente.setPreco(curso.getPreco());
+        cursoExistente.setDataCriacao(curso.getDataCriacao());
         return cursoRepository.save(cursoExistente);
     }
 
