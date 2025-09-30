@@ -1,7 +1,7 @@
 package com.itb.inf2cm.CursiFy.controller;
 
-import com.itb.inf2cm.CursiFy.model.entity.Curso;
-import com.itb.inf2cm.CursiFy.model.services.CursoService;
+import com.itb.inf2cm.CursiFy.model.entity.Aula;
+import com.itb.inf2cm.CursiFy.model.services.AulaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,26 +12,26 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/curso")
-public class CursoController {
+public class AulaController {
 
     @Autowired
-    private CursoService cursoService;
+    private AulaService aulaService;
 
     @GetMapping
-    public ResponseEntity <List<Curso>> findAll() {
-        return ResponseEntity.ok(cursoService.findAll());
+    public ResponseEntity <List<Aula>> findAll() {
+        return ResponseEntity.ok(aulaService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity <Curso> save(@RequestBody Curso curso) {
-        Curso novo = cursoService.save(curso);
+    public ResponseEntity <Aula> save(@RequestBody Aula aula) {
+        Aula novo = aulaService.save(aula);
         return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> listarCursoPorId(@PathVariable String id) {
+    public ResponseEntity<Object> listarAulaPorId(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(cursoService.findById(Long.parseLong(id)));
+            return ResponseEntity.ok(aulaService.findById(Long.parseLong(id)));
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -47,16 +47,16 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Aula não encontrada com o id: " + id
                     )
             );
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarCurso(@PathVariable String id, @RequestBody Curso curso){
+    public ResponseEntity<Object> atualizarAula(@PathVariable String id, @RequestBody Aula aula){
         try {
-            return ResponseEntity.ok(cursoService.update(Long.parseLong(id), curso));
+            return ResponseEntity.ok(aulaService.update(Long.parseLong(id), aula));
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -72,17 +72,17 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Aula não encontrada com o id: " + id
                     )
             );
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarCurso(@PathVariable String id){
+    public ResponseEntity<Object> deletarAula(@PathVariable String id){
         try {
-            cursoService.delete(Long.parseLong(id));
-            return ResponseEntity.ok("Curso com o id: " + id + " deletado com sucesso.");
+            aulaService.delete(Long.parseLong(id));
+            return ResponseEntity.ok("Aula com o id: " + id + " deletada com sucesso.");
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -98,7 +98,7 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Aula não encontrada com o id: " + id
                     )
             );
         }

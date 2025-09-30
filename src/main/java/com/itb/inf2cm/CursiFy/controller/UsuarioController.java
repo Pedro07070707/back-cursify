@@ -1,7 +1,7 @@
 package com.itb.inf2cm.CursiFy.controller;
 
-import com.itb.inf2cm.CursiFy.model.entity.Curso;
-import com.itb.inf2cm.CursiFy.model.services.CursoService;
+import com.itb.inf2cm.CursiFy.model.entity.Usuario;
+import com.itb.inf2cm.CursiFy.model.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,27 +11,27 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/v1/curso")
-public class CursoController {
+@RequestMapping("/api/v1/usuario")
+public class UsuarioController {
 
     @Autowired
-    private CursoService cursoService;
+    private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity <List<Curso>> findAll() {
-        return ResponseEntity.ok(cursoService.findAll());
+    public ResponseEntity <List<Usuario>> findAll() {
+        return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity <Curso> save(@RequestBody Curso curso) {
-        Curso novo = cursoService.save(curso);
+    public ResponseEntity <Usuario> save(@RequestBody Usuario usuario) {
+        Usuario novo = usuarioService.save(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> listarCursoPorId(@PathVariable String id) {
+    public ResponseEntity<Object> listarUsuarioPorId(@PathVariable String id) {
         try {
-            return ResponseEntity.ok(cursoService.findById(Long.parseLong(id)));
+            return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -47,16 +47,16 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Usuário não encontrado com o id: " + id
                     )
             );
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarCurso(@PathVariable String id, @RequestBody Curso curso){
+    public ResponseEntity<Object> atualizarCurso(@PathVariable String id, @RequestBody Usuario usuario){
         try {
-            return ResponseEntity.ok(cursoService.update(Long.parseLong(id), curso));
+            return ResponseEntity.ok(usuarioService.update(Long.parseLong(id), usuario));
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -72,17 +72,17 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Usuário não encontrado com o id: " + id
                     )
             );
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarCurso(@PathVariable String id){
+    public ResponseEntity<Object> deletarUsuario(@PathVariable String id){
         try {
-            cursoService.delete(Long.parseLong(id));
-            return ResponseEntity.ok("Curso com o id: " + id + " deletado com sucesso.");
+            usuarioService.delete(Long.parseLong(id));
+            return ResponseEntity.ok("Usuário com o id: " + id + " deletado com sucesso.");
         }
         catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body(
@@ -98,7 +98,7 @@ public class CursoController {
                     Map.of(
                             "status", 404,
                             "error", "Not Found",
-                            "message", "Curso não encontrado com o id: " + id
+                            "message", "Usuário não encontrado com o id: " + id
                     )
             );
         }
