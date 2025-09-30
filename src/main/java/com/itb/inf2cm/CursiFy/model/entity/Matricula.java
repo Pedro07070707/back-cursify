@@ -10,5 +10,9 @@ public class Matricula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String data;
+    @Column(nullable = false)
+    private String dataMatricula;
+
+    @Column(length = 20, nullable = false)
+    private String statusMatricula;
 }

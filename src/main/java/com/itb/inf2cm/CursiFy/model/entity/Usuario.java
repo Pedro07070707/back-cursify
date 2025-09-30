@@ -3,8 +3,8 @@ package com.itb.inf2cm.CursiFy.model.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Professor")
-public class Professor {
+@Table(name = "Usuario")
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,8 @@ public class Professor {
     private String nome;
     private String email;
     private String senha;
+    private String nivelAcesso;
+    private String foto;
     private String dataCadastro;
-    private String titulacao;
-    private String biografia;
+    private String statusUsuario;
 }

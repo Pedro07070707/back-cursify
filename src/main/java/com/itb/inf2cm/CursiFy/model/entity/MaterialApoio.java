@@ -10,7 +10,12 @@ public class MaterialApoio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 100, nullable = false)
     private String tipoMaterial;
+
+    @Column(length = 100, nullable = false)
     private String titulo;
+
+    @Column(length = 100, nullable = false)
     private String url;
 }
