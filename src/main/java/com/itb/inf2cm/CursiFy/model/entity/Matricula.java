@@ -13,8 +13,7 @@ public class Matricula {
     @Column(nullable = false)
     private String dataMatricula;
 
-    @Column(length = 20, nullable = false)
-    private String statusMatricula;
+    private Boolean statusMatricula;
 
     public Long getId() {
         return id;
@@ -32,11 +31,11 @@ public class Matricula {
         this.dataMatricula = dataMatricula;
     }
 
-    public String getStatusMatricula() {
+    public Boolean getStatusMatricula() {
         return statusMatricula;
     }
 
-    public void setStatusMatricula(String statusMatricula) {
+    public void setStatusMatricula(Boolean statusMatricula) {
         this.statusMatricula = statusMatricula;
     }
 }

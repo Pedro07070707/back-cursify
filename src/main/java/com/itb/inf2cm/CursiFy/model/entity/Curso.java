@@ -25,6 +25,8 @@ public class Curso {
     @Column(length = 50, nullable = false)
     private String dataCriacao;
 
+    private Boolean statusCurso;
+
     public Long getId() {
         return id;
     }
@@ -71,5 +73,13 @@ public class Curso {
 
     public void setDataCriacao(String dataCriacao) {
         this.dataCriacao = dataCriacao;
+    }
+
+    public Boolean getStatusCurso() {
+        return statusCurso;
+    }
+
+    public void setStatusCurso(Boolean statusCurso) {
+        this.statusCurso = statusCurso;
     }
 }

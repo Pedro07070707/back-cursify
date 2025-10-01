@@ -18,7 +18,7 @@ public class UsuarioService {
     }
 
     public Usuario save(Usuario usuario) {
-        usuario.setCodStatus(true);
+        usuario.setStatusUsuario(true);
         return usuarioRepository.save(usuario);
     }
 

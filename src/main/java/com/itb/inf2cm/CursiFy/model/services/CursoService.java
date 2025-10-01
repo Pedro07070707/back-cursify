@@ -18,7 +18,7 @@ public class CursoService {
     }
 
     public Curso save(Curso curso) {
-        curso.setCodStatus(true);
+        curso.setStatusCurso(true);
         return cursoRepository.save(curso);
     }
 
@@ -34,6 +34,7 @@ public class CursoService {
         curso.setCargaHoraria(curso.getCargaHoraria());
         cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
+        cursoExistente.setStatusCurso(curso.getStatusCurso());
         return cursoRepository.save(cursoExistente);
     }
 

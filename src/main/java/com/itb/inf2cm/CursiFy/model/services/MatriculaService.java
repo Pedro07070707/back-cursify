@@ -18,7 +18,7 @@ public class MatriculaService {
     }
 
     public Matricula save(Matricula matricula) {
-        matricula.setCodStatus(true);
+        matricula.setStatusMatricula(true);
         return matriculaRepository.save(matricula);
     }
 

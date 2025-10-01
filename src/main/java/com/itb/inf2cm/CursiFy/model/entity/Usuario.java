@@ -28,8 +28,7 @@ public class Usuario {
     @Column(nullable = false)
     private String dataCadastro;
 
-    @Column(length = 20, nullable = false)
-    private String statusUsuario;
+    private Boolean statusUsuario;
 
     public Long getId() {
         return id;
@@ -87,11 +86,11 @@ public class Usuario {
         this.dataCadastro = dataCadastro;
     }
 
-    public String getStatusUsuario() {
+    public Boolean getStatusUsuario() {
         return statusUsuario;
     }
 
-    public void setStatusUsuario(String statusUsuario) {
+    public void setStatusUsuario(Boolean statusUsuario) {
         this.statusUsuario = statusUsuario;
     }
 }
