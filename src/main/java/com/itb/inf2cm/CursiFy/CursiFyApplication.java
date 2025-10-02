@@ -8,6 +8,8 @@ public class CursiFyApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursiFyApplication.class, args);
+
+		System.out.println("CursiFy Application Started");
 	}
 
 }
