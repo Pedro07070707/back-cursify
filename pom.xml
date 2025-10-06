@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.itb.inf2cm</groupId>
-	<artifactId>back-cursify</artifactId>
+	<artifactId>CursiFy</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>CursiFy</name>
 	<description>Projeto TCC CursiFy</description>

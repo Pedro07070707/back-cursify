@@ -2,9 +2,11 @@ package com.itb.inf2cm.CursiFy.model.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Curso")
-public class Curso {
+public class Curso extends Categoria {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +24,8 @@ public class Curso {
     @Column(length = 50, nullable = false)
     private Double preco;
 
-    @Column(length = 50, nullable = false)
-    private String dataCriacao;
+    @Column(nullable = false)
+    private LocalDateTime dataCriacao;
 
     private Boolean statusCurso;
 
@@ -67,11 +69,11 @@ public class Curso {
         this.preco = preco;
     }
 
-    public String getDataCriacao() {
+    public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(String dataCriacao) {
+    public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
