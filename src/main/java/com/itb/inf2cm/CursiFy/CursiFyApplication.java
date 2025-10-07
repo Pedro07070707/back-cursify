@@ -11,5 +11,4 @@ public class CursiFyApplication {
 
 		System.out.println("CursiFy Application Started");
 	}
-
 }
