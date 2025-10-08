@@ -2,9 +2,11 @@ package com.itb.inf2cm.CursiFy.model.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "Usuario")
-public class Usuario extends Matricula {
+public class Usuario{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +24,11 @@ public class Usuario extends Matricula {
     @Column(length = 10, nullable = true)
     private String nivelAcesso;
 
-    @Column(length = 200, nullable = true)
-    private String foto;
+   // @Column(length = 200, nullable = true)
+    //private String foto;
 
     @Column(nullable = false)
-    private String dataCadastro;
+    private LocalDateTime dataCadastro;
 
     private Boolean statusUsuario;
 
@@ -70,19 +72,19 @@ public class Usuario extends Matricula {
         this.nivelAcesso = nivelAcesso;
     }
 
-    public String getFoto() {
-        return foto;
-    }
+    //public String getFoto() {
+     //   return foto;
+    //}
 
-    public void setFoto(String foto) {
-        this.foto = foto;
-    }
+   // public void setFoto(String foto) {
+    //    this.foto = foto;
+    //}
 
-    public String getDataCadastro() {
+    public LocalDateTime getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(String dataCadastro) {
+    public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 

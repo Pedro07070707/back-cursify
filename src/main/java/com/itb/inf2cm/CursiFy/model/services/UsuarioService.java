@@ -33,7 +33,7 @@ public class UsuarioService {
         usuarioExistente.setEmail(usuario.getEmail());
         usuarioExistente.setSenha(usuario.getSenha());
         usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
-        usuarioExistente.setFoto(usuario.getFoto());
+        //usuarioExistente.setFoto(usuario.getFoto());
         usuario.setDataCadastro(usuario.getDataCadastro());
         usuarioExistente.setStatusUsuario(usuario.getStatusUsuario());
         return usuarioRepository.save(usuarioExistente);
