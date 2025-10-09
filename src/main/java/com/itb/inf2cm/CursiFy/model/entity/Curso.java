@@ -21,8 +21,8 @@ public class Curso{
     @Column(length = 50, nullable = false)
     private int cargaHoraria;
 
-    @Column(length = 50, nullable = false)
-    private Double preco;
+    //@Column(length = 50, nullable = false)
+    //private Double preco;
 
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
@@ -61,13 +61,13 @@ public class Curso{
         this.cargaHoraria = cargaHoraria;
     }
 
-    public Double getPreco() {
-        return preco;
-    }
+    //public Double getPreco() {
+    //    return preco;
+    //}
 
-    public void setPreco(Double preco) {
-        this.preco = preco;
-    }
+    //public void setPreco(Double preco) {
+    //    this.preco = preco;
+    //}
 
     public LocalDateTime getDataCriacao() {
         return dataCriacao;

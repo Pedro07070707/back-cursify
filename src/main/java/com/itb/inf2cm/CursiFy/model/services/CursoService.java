@@ -32,7 +32,7 @@ public class CursoService {
         cursoExistente.setNome(curso.getNome());
         cursoExistente.setDescricao(curso.getDescricao());
         curso.setCargaHoraria(curso.getCargaHoraria());
-        cursoExistente.setPreco(curso.getPreco());
+        //cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
         return cursoRepository.save(cursoExistente);
