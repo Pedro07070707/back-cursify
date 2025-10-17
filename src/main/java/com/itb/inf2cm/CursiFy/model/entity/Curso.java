@@ -18,6 +18,9 @@ public class Curso{
     @Column(length = 100, nullable = false)
     private String descricao;
 
+    @Column(length = 100, nullable = false)
+    private String categoria;
+
     @Column(length = 50, nullable = false)
     private int cargaHoraria;
 
@@ -52,6 +55,10 @@ public class Curso{
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+    public String getCategoria() { return categoria; }
+
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public int getCargaHoraria() {
         return cargaHoraria;
