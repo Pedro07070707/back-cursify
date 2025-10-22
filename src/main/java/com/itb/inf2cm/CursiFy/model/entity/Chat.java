@@ -15,6 +15,9 @@ public class Chat {
     @Column(nullable = false)
     private LocalDateTime dataChat;
 
+    @Column(length = 200, nullable = false)
+    private String mensagem;
+
     private Boolean statusChat;
 
     public Long getId() {
@@ -31,6 +34,14 @@ public class Chat {
 
     public void setDataChat(LocalDateTime dataChat) {
         this.dataChat = dataChat;
+    }
+
+    public String getMensagem() {
+        return mensagem;
+    }
+
+    public void setMensagem(String mensagem) {
+        this.mensagem = mensagem;
     }
 
     public Boolean getStatusChat() {
