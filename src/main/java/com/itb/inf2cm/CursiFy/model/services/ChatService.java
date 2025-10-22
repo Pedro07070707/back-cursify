@@ -30,7 +30,7 @@ public class ChatService {
     public Chat update(Long id, Chat chat) {
         Chat chatExistente = findById(id);
         chat.setDataChat(chat.getDataChat());
-        chat.setMensagem(chat.getMensagem());
+        chatExistente.setMensagem(chat.getMensagem());
         chatExistente.setStatusChat(chat.getStatusChat());
         return chatRepository.save(chatExistente);
     }
