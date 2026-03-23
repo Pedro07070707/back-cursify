@@ -30,7 +30,8 @@ public class Usuario{
     @Column(nullable = false)
     private LocalDateTime dataCadastro;
 
-    private Boolean statusUsuario;
+    @Column(length = 20, nullable = false)
+    private String statusUsuario;
 
     public Long getId() {
         return id;
@@ -72,14 +73,6 @@ public class Usuario{
         this.nivelAcesso = nivelAcesso;
     }
 
-    //public String getFoto() {
-     //   return foto;
-    //}
-
-   // public void setFoto(String foto) {
-    //    this.foto = foto;
-    //}
-
     public LocalDateTime getDataCadastro() {
         return dataCadastro;
     }
@@ -88,11 +81,11 @@ public class Usuario{
         this.dataCadastro = dataCadastro;
     }
 
-    public Boolean getStatusUsuario() {
+    public String getStatusUsuario() {
         return statusUsuario;
     }
 
-    public void setStatusUsuario(Boolean statusUsuario) {
+    public void setStatusUsuario(String statusUsuario) {
         this.statusUsuario = statusUsuario;
     }
 }

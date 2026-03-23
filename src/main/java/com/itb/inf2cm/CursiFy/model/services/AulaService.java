@@ -1,6 +1,5 @@
 package com.itb.inf2cm.CursiFy.model.services;
 
-import com.itb.inf2cm.CursiFy.model.entity.Aula;
 import com.itb.inf2cm.CursiFy.model.repository.AulaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

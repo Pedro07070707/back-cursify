@@ -12,13 +12,14 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 50, nullable = false)
+    private String remetente;
+
     @Column(nullable = false)
     private LocalDateTime dataChat;
 
-    @Column(length = 200, nullable = false)
-    private String mensagem;
-
-    private Boolean statusChat;
+    @Column(length = 20, nullable = false)
+    private String statusChat;
 
     public Long getId() {
         return id;
@@ -26,6 +27,14 @@ public class Chat {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRemetente() {
+        return remetente;
+    }
+
+    public void setRemetente(String remetente) {
+        this.remetente = remetente;
     }
 
     public LocalDateTime getDataChat() {
@@ -36,19 +45,11 @@ public class Chat {
         this.dataChat = dataChat;
     }
 
-    public String getMensagem() {
-        return mensagem;
-    }
-
-    public void setMensagem(String mensagem) {
-        this.mensagem = mensagem;
-    }
-
-    public Boolean getStatusChat() {
+    public String getStatusChat() {
         return statusChat;
     }
 
-    public void setStatusChat(Boolean statusChat) {
+    public void setStatusChat(String statusChat) {
         this.statusChat = statusChat;
     }
 }

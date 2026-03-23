@@ -30,7 +30,8 @@ public class Curso{
     @Column(nullable = false)
     private LocalDateTime dataCriacao;
 
-    private Boolean statusCurso;
+    @Column(length = 20, nullable = false)
+    private String statusCurso;
 
     public Long getId() {
         return id;
@@ -56,9 +57,13 @@ public class Curso{
         this.descricao = descricao;
     }
 
-    public String getCategoria() { return categoria; }
+    public String getCategoria() {
+        return categoria;
+    }
 
-    public void setCategoria(String categoria) { this.categoria = categoria; }
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
 
     public int getCargaHoraria() {
         return cargaHoraria;
@@ -68,14 +73,6 @@ public class Curso{
         this.cargaHoraria = cargaHoraria;
     }
 
-    //public Double getPreco() {
-    //    return preco;
-    //}
-
-    //public void setPreco(Double preco) {
-    //    this.preco = preco;
-    //}
-
     public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
@@ -84,11 +81,11 @@ public class Curso{
         this.dataCriacao = dataCriacao;
     }
 
-    public Boolean getStatusCurso() {
+    public String getStatusCurso() {
         return statusCurso;
     }
 
-    public void setStatusCurso(Boolean statusCurso) {
+    public void setStatusCurso(String statusCurso) {
         this.statusCurso = statusCurso;
     }
 }
