@@ -31,8 +31,8 @@ public class CursoService {
         Curso cursoExistente = findById(id);
         cursoExistente.setNome(curso.getNome());
         cursoExistente.setDescricao(curso.getDescricao());
-        cursoExistente.setDescricao(curso.getDescricao());
         curso.setCategoria(curso.getCategoria());
+        curso.setCargaHoraria(curso.getCargaHoraria());
         //cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());

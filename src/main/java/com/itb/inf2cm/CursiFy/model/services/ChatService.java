@@ -29,8 +29,8 @@ public class ChatService {
 
     public Chat update(Long id, Chat chat) {
         Chat chatExistente = findById(id);
+        chat.setRemetente(chat.getRemetente());
         chat.setDataChat(chat.getDataChat());
-        chatExistente.setMensagem(chat.getMensagem());
         chatExistente.setStatusChat(chat.getStatusChat());
         return chatRepository.save(chatExistente);
     }
