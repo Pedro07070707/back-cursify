@@ -18,7 +18,7 @@ public class AtividadesService {
     }
 
     public Atividades save(Atividades Atividades) {
-        Atividades.setStatusAtividade(true);
+        Atividades.setStatusAtividade(0);
         return AtividadesRepository.save(Atividades);
     }
 

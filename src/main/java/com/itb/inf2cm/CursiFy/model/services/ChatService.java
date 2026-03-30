@@ -18,7 +18,7 @@ public class ChatService {
     }
 
     public Chat save(Chat chat) {
-        chat.setStatusChat(true);
+        chat.setStatusChat("Ativo");
         return chatRepository.save(chat);
     }
 

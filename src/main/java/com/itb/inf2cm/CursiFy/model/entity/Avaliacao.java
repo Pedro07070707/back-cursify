@@ -11,7 +11,6 @@ public class Avaliacao {
     private Long id;
 
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long numeroAvaliacao;
 
     @Column(length = 500, nullable = false)

@@ -18,7 +18,7 @@ public class AvaliacaoService {
     }
 
     public Avaliacao save(Avaliacao Avaliacao) {
-        Avaliacao.setStatusAvaliacao(true);
+        Avaliacao.setStatusAvaliacao(0);
         return AvaliacaoRepository.save(Avaliacao);
     }
 

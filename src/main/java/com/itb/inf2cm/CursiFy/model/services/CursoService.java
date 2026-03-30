@@ -18,7 +18,7 @@ public class CursoService {
     }
 
     public Curso save(Curso curso) {
-        curso.setStatusCurso(true);
+        curso.setStatusCurso("Ativo");
         return cursoRepository.save(curso);
     }
 
@@ -31,8 +31,10 @@ public class CursoService {
         Curso cursoExistente = findById(id);
         cursoExistente.setNome(curso.getNome());
         cursoExistente.setDescricao(curso.getDescricao());
-        curso.setCategoria(curso.getCategoria());
-        curso.setCargaHoraria(curso.getCargaHoraria());
+        //curso.setCategoria(curso.getCategoria());
+        //curso.setCargaHoraria(curso.getCargaHoraria());
+        cursoExistente.setCategoria(curso.getCategoria());
+        cursoExistente.setCargaHoraria(curso.getCargaHoraria());
         //cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
