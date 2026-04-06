@@ -19,6 +19,8 @@ public class CursoService {
 
     public Curso save(Curso curso) {
         curso.setStatusCurso("Ativo");
+        curso.setDataCriacao(java.time.LocalDateTime.now());
+
         return cursoRepository.save(curso);
     }
 
@@ -38,6 +40,12 @@ public class CursoService {
         //cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
+        cursoExistente.setLink1(curso.getLink1());
+        cursoExistente.setNomeLink1(curso.getNomeLink1());
+        cursoExistente.setLink2(curso.getLink2());
+        cursoExistente.setNomeLink2(curso.getNomeLink2());
+        cursoExistente.setLink3(curso.getLink3());
+        cursoExistente.setNomeLink3(curso.getNomeLink3());
         return cursoRepository.save(cursoExistente);
     }
 

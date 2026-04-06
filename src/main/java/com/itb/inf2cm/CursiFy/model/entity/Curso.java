@@ -4,6 +4,12 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 @Entity
 @Table(name = "Curso")
 public class Curso{
@@ -32,6 +38,24 @@ public class Curso{
 
     @Column(length = 20, nullable = false)
     private String statusCurso;
+    
+    @Column(length = 500)
+    private String link1;
+
+    @Column(length = 200)
+    private String nomeLink1;
+
+    @Column(length = 500)
+    private String link2;
+
+    @Column(length = 200)
+    private String nomeLink2;
+
+    @Column(length = 500)
+    private String link3;
+
+    @Column(length = 200)
+    private String nomeLink3;
 
     public Long getId() {
         return id;
@@ -87,5 +111,53 @@ public class Curso{
 
     public void setStatusCurso(String statusCurso) {
         this.statusCurso = statusCurso;
+    }
+    
+    public String getLink1() {
+        return link1;
+    }
+
+    public void setLink1(String link1) {
+        this.link1 = link1;
+    }
+
+    public String getNomeLink1() {
+        return nomeLink1;
+    }
+
+    public void setNomeLink1(String nomeLink1) {
+        this.nomeLink1 = nomeLink1;
+    }
+
+    public String getLink2() {
+        return link2;
+    }
+
+    public void setLink2(String link2) {
+        this.link2 = link2;
+    }
+
+    public String getNomeLink2() {
+        return nomeLink2;
+    }
+
+    public void setNomeLink2(String nomeLink2) {
+        this.nomeLink2 = nomeLink2;
+    }
+
+    public String getLink3() {
+        return link3;
+    }
+
+    public void setLink3(String link3) {
+        this.link3 = link3;
+    }
+
+    public String getNomeLink3() {
+        return nomeLink3;
+    }
+
+    public void setNomeLink3(String nomeLink3) {
+        this.nomeLink3 = nomeLink3;
     }
 }
