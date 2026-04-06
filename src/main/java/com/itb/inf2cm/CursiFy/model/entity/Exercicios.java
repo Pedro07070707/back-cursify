@@ -1,5 +1,6 @@
 package com.itb.inf2cm.CursiFy.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,6 +22,15 @@ public class Exercicios {
 
     @Column(length = 200, nullable = true)
     private String link;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnoreProperties({"senha", "email", "dataCadastro", "statusUsuario", "nivelAcesso"})
+    private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "curso_id", nullable = false)
+    private Curso curso;
 
     @Column(length = 20, nullable = false)
     private String statusExercicios;
@@ -63,6 +73,22 @@ public class Exercicios {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     public String getStatusExercicios() {

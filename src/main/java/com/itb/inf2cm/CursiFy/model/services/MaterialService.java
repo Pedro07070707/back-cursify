@@ -18,13 +18,15 @@ public class MaterialService {
     }
 
     public Material save(Material material) {
-        material.setStatusMaterial("Ativo");
+        if (material.getStatusMaterial() == null || material.getStatusMaterial().isBlank()) {
+            material.setStatusMaterial("Nao concluido");
+        }
         return materialRepository.save(material);
     }
 
     public Material findById(Long id) {
         return materialRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Material não encontrado como o Id" + id));
+                .orElseThrow(() -> new RuntimeException("Material nao encontrado com o id " + id));
     }
 
     public Material update(Long id, Material material) {
@@ -34,6 +36,12 @@ public class MaterialService {
         materialExistente.setConteudo(material.getConteudo());
         materialExistente.setLink(material.getLink());
         materialExistente.setStatusMaterial(material.getStatusMaterial());
+        if (material.getUsuario() != null) {
+            materialExistente.setUsuario(material.getUsuario());
+        }
+        if (material.getCurso() != null) {
+            materialExistente.setCurso(material.getCurso());
+        }
         return materialRepository.save(materialExistente);
     }
 

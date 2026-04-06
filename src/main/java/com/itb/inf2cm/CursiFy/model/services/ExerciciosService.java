@@ -18,13 +18,15 @@ public class ExerciciosService {
     }
 
     public Exercicios save(Exercicios exercicios) {
-        exercicios.setStatusExercicios("Ativo");
+        if (exercicios.getStatusExercicios() == null || exercicios.getStatusExercicios().isBlank()) {
+            exercicios.setStatusExercicios("Nao concluido");
+        }
         return exerciciosRepository.save(exercicios);
     }
 
     public Exercicios findById(Long id) {
         return exerciciosRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Exercicios não encontrado como o Id" + id));
+                .orElseThrow(() -> new RuntimeException("Exercicios nao encontrado com o id " + id));
     }
 
     public Exercicios update(Long id, Exercicios exercicios) {
@@ -34,6 +36,12 @@ public class ExerciciosService {
         exerciciosExistente.setConteudo(exercicios.getConteudo());
         exerciciosExistente.setLink(exercicios.getLink());
         exerciciosExistente.setStatusExercicios(exercicios.getStatusExercicios());
+        if (exercicios.getUsuario() != null) {
+            exerciciosExistente.setUsuario(exercicios.getUsuario());
+        }
+        if (exercicios.getCurso() != null) {
+            exerciciosExistente.setCurso(exercicios.getCurso());
+        }
         return exerciciosRepository.save(exerciciosExistente);
     }
 

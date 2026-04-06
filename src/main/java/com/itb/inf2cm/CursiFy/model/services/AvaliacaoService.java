@@ -11,33 +11,38 @@ import java.util.List;
 public class AvaliacaoService {
 
     @Autowired
-    private AvaliacaoRepository AvaliacaoRepository;
+    private AvaliacaoRepository avaliacaoRepository;
 
     public List<Avaliacao> findAll() {
-        return AvaliacaoRepository.findAll();
+        return avaliacaoRepository.findAll();
     }
 
-    public Avaliacao save(Avaliacao Avaliacao) {
-        Avaliacao.setStatusAvaliacao(0);
-        return AvaliacaoRepository.save(Avaliacao);
+    public Avaliacao save(Avaliacao avaliacao) {
+        return avaliacaoRepository.save(avaliacao);
     }
 
     public Avaliacao findById(Long id) {
-        return AvaliacaoRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Usuário não encontrado como o Id" + id));
+        return avaliacaoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Avaliacao nao encontrada com o id " + id));
     }
 
-    public Avaliacao update(Long id, Avaliacao Avaliacao) {
-        Avaliacao AvaliacaoExistente = findById(id);
-        AvaliacaoExistente.setNumeroAvaliacao(Avaliacao.getNumeroAvaliacao());
-        AvaliacaoExistente.setEnunciadoAvaliacao(Avaliacao.getEnunciadoAvaliacao());
-        AvaliacaoExistente.setAlternativaAvaliacao(Avaliacao.getAlternativaAvaliacao());
-        AvaliacaoExistente.setStatusAvaliacao(Avaliacao.getStatusAvaliacao());
-        return AvaliacaoRepository.save(AvaliacaoExistente);
+    public Avaliacao update(Long id, Avaliacao avaliacao) {
+        Avaliacao avaliacaoExistente = findById(id);
+        avaliacaoExistente.setNumeroAvaliacao(avaliacao.getNumeroAvaliacao());
+        avaliacaoExistente.setEnunciadoAvaliacao(avaliacao.getEnunciadoAvaliacao());
+        avaliacaoExistente.setAlternativaAvaliacao(avaliacao.getAlternativaAvaliacao());
+        avaliacaoExistente.setStatusAvaliacao(avaliacao.getStatusAvaliacao());
+        if (avaliacao.getUsuario() != null) {
+            avaliacaoExistente.setUsuario(avaliacao.getUsuario());
+        }
+        if (avaliacao.getCurso() != null) {
+            avaliacaoExistente.setCurso(avaliacao.getCurso());
+        }
+        return avaliacaoRepository.save(avaliacaoExistente);
     }
 
     public void delete(Long id) {
-        Avaliacao AvaliacaoExistente = findById(id);
-        AvaliacaoRepository.delete(AvaliacaoExistente);
+        Avaliacao avaliacaoExistente = findById(id);
+        avaliacaoRepository.delete(avaliacaoExistente);
     }
 }
