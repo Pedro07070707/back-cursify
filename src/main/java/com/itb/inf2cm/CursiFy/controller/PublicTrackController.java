@@ -2,23 +2,22 @@ package com.itb.inf2cm.CursiFy.controller;
 
 import com.itb.inf2cm.CursiFy.model.dto.PublicTrackNodeResponse;
 import com.itb.inf2cm.CursiFy.model.dto.PublicTrackResponse;
-import com.itb.inf2cm.CursiFy.model.entity.Curso;
-import com.itb.inf2cm.CursiFy.model.entity.Exercicios;
-import com.itb.inf2cm.CursiFy.model.entity.Material;
+import com.itb.inf2cm.CursiFy.model.entity.NoTrilha;
+import com.itb.inf2cm.CursiFy.model.entity.ProgressoNo;
+import com.itb.inf2cm.CursiFy.model.entity.Trilha;
 import com.itb.inf2cm.CursiFy.model.exception.ResourceNotFoundException;
-import com.itb.inf2cm.CursiFy.model.repository.ExerciciosRepository;
-import com.itb.inf2cm.CursiFy.model.repository.MaterialRepository;
-import com.itb.inf2cm.CursiFy.model.services.CursoService;
+import com.itb.inf2cm.CursiFy.model.repository.ProgressoNoRepository;
+import com.itb.inf2cm.CursiFy.model.services.TrilhaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -27,144 +26,81 @@ import java.util.stream.Collectors;
 public class PublicTrackController {
 
     @Autowired
-    private CursoService cursoService;
+    private TrilhaService trilhaService;
 
     @Autowired
-    private MaterialRepository materialRepository;
-
-    @Autowired
-    private ExerciciosRepository exerciciosRepository;
+    private ProgressoNoRepository progressoNoRepository;
 
     @GetMapping
-    public List<PublicTrackResponse> list() {
-        List<Curso> cursos = cursoService.findAll();
-        List<Material> materiais = materialRepository.findAll();
-        List<Exercicios> exercicios = exerciciosRepository.findAll();
-
-        Map<Long, List<Material>> materiaisPorCurso = materiais.stream()
-                .filter(material -> material.getCurso() != null && material.getCurso().getId() != null)
-                .collect(Collectors.groupingBy(material -> material.getCurso().getId()));
-
-        Map<Long, List<Exercicios>> exerciciosPorCurso = exercicios.stream()
-                .filter(exercicio -> exercicio.getCurso() != null && exercicio.getCurso().getId() != null)
-                .collect(Collectors.groupingBy(exercicio -> exercicio.getCurso().getId()));
-
-        return cursos.stream()
-                .sorted(Comparator.comparing(Curso::getId))
-                .map(curso -> {
-                    List<Material> cursoMateriais = materiaisPorCurso.getOrDefault(curso.getId(), List.of());
-                    List<Exercicios> cursoExercicios = exerciciosPorCurso.getOrDefault(curso.getId(), List.of());
-                    List<PublicTrackNodeResponse> nodes = buildNodes(curso, cursoMateriais, cursoExercicios);
-                    int xpTotal = nodes.stream().mapToInt(PublicTrackNodeResponse::getXp).sum();
-                    int progresso = Math.min(100, (cursoMateriais.size() * 22) + (cursoExercicios.size() * 18));
-                    int streak = Math.max(1, cursoMateriais.size() + cursoExercicios.size() / 2);
-                    String proximoNo = nodes.stream()
-                            .filter(node -> "EM_ANDAMENTO".equals(node.getEstado()) || "LIBERADO".equals(node.getEstado()))
-                            .findFirst()
-                            .map(PublicTrackNodeResponse::getTitulo)
-                            .orElse(nodes.isEmpty() ? "Novo nodo" : nodes.get(0).getTitulo());
-
-                    return new PublicTrackResponse(
-                            curso.getId(),
-                            curso.getNome(),
-                            curso.getCategoria(),
-                            resolveProfessorName(curso, cursoMateriais, cursoExercicios),
-                            xpTotal,
-                            resolveDifficulty(cursoMateriais.size() + cursoExercicios.size()),
-                            pickThumbnail(curso.getCategoria()),
-                            progresso,
-                            streak,
-                            proximoNo,
-                            nodes
-                    );
-                })
-                .collect(Collectors.toList());
+    public List<PublicTrackResponse> list(@RequestParam(required = false) Long userId) {
+        List<ProgressoNo> progresso = userId == null ? List.of() : progressoNoRepository.findByUsuarioId(userId);
+        return trilhaService.findAll().stream()
+                .sorted(Comparator.comparing(Trilha::getId))
+                .map(trilha -> mapTrack(trilha, progresso))
+                .toList();
     }
 
     @GetMapping("/{cursoId}")
-    public PublicTrackResponse getByCourse(@PathVariable Long cursoId) {
-        return list().stream()
+    public PublicTrackResponse getByCourse(@PathVariable Long cursoId, @RequestParam(required = false) Long userId) {
+        return list(userId).stream()
                 .filter(track -> track.getId().equals(cursoId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Trilha nao encontrada para o curso " + cursoId));
     }
 
-    private List<PublicTrackNodeResponse> buildNodes(Curso curso, List<Material> materiais, List<Exercicios> exercicios) {
+    private PublicTrackResponse mapTrack(Trilha trilha, List<ProgressoNo> progresso) {
+        List<NoTrilha> nos = trilha.getNos() == null ? List.of() : trilha.getNos().stream().sorted(Comparator.comparing(no -> no.getOrdem() == null ? 0 : no.getOrdem())).toList();
+        Map<Long, ProgressoNo> progressoPorNo = progresso.stream()
+                .filter(p -> p.getNoId() != null)
+                .collect(Collectors.toMap(ProgressoNo::getNoId, p -> p, (a, b) -> a));
         List<PublicTrackNodeResponse> nodes = new ArrayList<>();
-
-        int index = 1;
-        for (Material material : materiais) {
+        int ordemAtual = 0;
+        for (NoTrilha no : nos) {
+            ordemAtual++;
+            ProgressoNo entry = progressoPorNo.get(no.getId());
+            String estadoNode = resolveEstado(ordemAtual, entry);
             nodes.add(new PublicTrackNodeResponse(
-                    curso.getId() * 100 + index,
-                    material.getTitulo(),
-                    "LICAO",
-                    index == 1 ? "EM_ANDAMENTO" : "LIBERADO",
-                    50 + (index * 10),
-                    "book",
-                    index == 1,
-                    false
+                    no.getId(),
+                    no.getTitulo(),
+                    no.getTipo(),
+                    estadoNode,
+                    no.getXpRecompensa() == null ? 10 : no.getXpRecompensa(),
+                    no.getIcone() == null ? "book" : no.getIcone(),
+                    "EM_ANDAMENTO".equals(estadoNode),
+                    "CHECKPOINT".equalsIgnoreCase(no.getTipo())
             ));
-            index++;
         }
-
-        for (Exercicios exercicio : exercicios) {
-            nodes.add(new PublicTrackNodeResponse(
-                    curso.getId() * 100 + index,
-                    exercicio.getTitulo(),
-                    "EXERCICIO",
-                    index % 3 == 0 ? "BLOQUEADO" : "LIBERADO",
-                    70 + (index * 10),
-                    "pencil",
-                    index == 2,
-                    index % 4 == 0
-            ));
-            index++;
-        }
-
         if (nodes.isEmpty()) {
-            nodes.add(new PublicTrackNodeResponse(
-                    curso.getId() * 100 + 1,
-                    "Visao geral",
-                    "LICAO",
-                    "EM_ANDAMENTO",
-                    50,
-                    "book",
-                    true,
-                    false
-            ));
+            nodes.add(new PublicTrackNodeResponse(trilha.getId() * 100, "Visao geral", "LICAO", "EM_ANDAMENTO", 50, "book", true, false));
         }
-
-        return nodes;
+        int xpTotal = nodes.stream().mapToInt(PublicTrackNodeResponse::getXp).sum();
+        int progressoPercent = Math.min(100, nodes.size() * 20);
+        int streak = Math.max(1, nodes.size());
+        String proximoNo = nodes.get(0).getTitulo();
+        return new PublicTrackResponse(
+                trilha.getId(),
+                trilha.getTitulo(),
+                trilha.getMateria(),
+                "Equipe CursiFy",
+                xpTotal,
+                resolveDifficulty(nodes.size()),
+                trilha.getThumbnailUrl() == null ? "/carousel-1.jpg" : trilha.getThumbnailUrl(),
+                progressoPercent,
+                streak,
+                proximoNo,
+                nodes
+        );
     }
 
-    private String resolveProfessorName(Curso curso, List<Material> materiais, List<Exercicios> exercicios) {
-        return materiais.stream()
-                .map(Material::getUsuario)
-                .filter(usuario -> usuario != null && usuario.getNome() != null)
-                .map(usuario -> usuario.getNome())
-                .findFirst()
-                .orElseGet(() -> exercicios.stream()
-                        .map(Exercicios::getUsuario)
-                        .filter(usuario -> usuario != null && usuario.getNome() != null)
-                        .map(usuario -> usuario.getNome())
-                        .findFirst()
-                        .orElse("Equipe CursiFy"));
+    private String resolveEstado(int ordem, ProgressoNo entry) {
+        if (entry != null && "CONCLUIDO".equalsIgnoreCase(entry.getStatus())) return "CONCLUIDO";
+        if (ordem == 1) return entry == null ? "EM_ANDAMENTO" : "LIBERADO";
+        return entry == null ? "LIBERADO" : "EM_ANDAMENTO";
     }
 
     private String resolveDifficulty(int nodeCount) {
-        if (nodeCount <= 2) {
-            return "Iniciante";
-        }
-        if (nodeCount <= 4) {
-            return "Intermediario";
-        }
+        if (nodeCount <= 2) return "Iniciante";
+        if (nodeCount <= 4) return "Intermediario";
         return "Avancado";
-    }
-
-    private String pickThumbnail(String category) {
-        String normalized = category == null ? "" : category.toLowerCase(Locale.ROOT);
-        if (normalized.contains("ling")) return "/carousel-2.jpg";
-        if (normalized.contains("tec")) return "/carousel-3.jpg";
-        return "/carousel-1.jpg";
     }
 }
