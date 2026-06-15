@@ -18,7 +18,7 @@ public class UsuarioResponse {
         this.email = usuario.getEmail();
         this.nivelAcesso = usuario.getNivelAcesso();
         this.dataCadastro = usuario.getDataCadastro();
-        this.statusUsuario = usuario.getStatusUsuario();
+        this.statusUsuario = Boolean.FALSE.equals(usuario.getAtivo()) ? "Inativo" : "Ativo";
     }
 
     public Long getId() { return id; }

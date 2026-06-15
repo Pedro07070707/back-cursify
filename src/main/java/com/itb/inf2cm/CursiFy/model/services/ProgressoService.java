@@ -68,6 +68,9 @@ public class ProgressoService {
 
     public ResponderNoResponse responderNo(Long noId, ResponderNoRequest request) {
         NoTrilha no = noTrilhaRepository.findById(noId).orElseThrow(() -> new RuntimeException("No nao encontrado"));
+        if (request.getUsuarioId() == null) {
+            throw new RuntimeException("usuarioId e obrigatorio");
+        }
         if ("PROJETO".equalsIgnoreCase(no.getTipo())) {
             ProjetoEnviadoRequest projetoRequest = new ProjetoEnviadoRequest();
             projetoRequest.setUsuarioId(request.getUsuarioId());
@@ -167,9 +170,6 @@ public class ProgressoService {
             progressoNoRepository.save(progresso);
         }
 
-        if (aprovado) {
-            concluirNo(request.getUsuarioId(), noId);
-        }
         XpUsuario xp = xpUsuarioRepository.findByUsuarioId(request.getUsuarioId()).orElseGet(() -> {
             XpUsuario novo = new XpUsuario();
             novo.setUsuarioId(request.getUsuarioId());
@@ -184,6 +184,20 @@ public class ProgressoService {
             xp.setNivel(Math.max(1, (xp.getXpTotal() / 200) + 1));
             xpUsuarioRepository.save(xp);
         }
+
+        if (aprovado) {
+            ProgressoNo progressoConcluido = progressoNoRepository.findByUsuarioIdAndNoId(request.getUsuarioId(), noId).orElseGet(ProgressoNo::new);
+            progressoConcluido.setUsuarioId(request.getUsuarioId());
+            progressoConcluido.setNoId(noId);
+            progressoConcluido.setStatus("CONCLUIDO");
+            progressoConcluido.setTentativas(tentativas);
+            progressoConcluido.setXpGanho(xpGanho);
+            progressoConcluido.setNotaObtida(nota);
+            progressoConcluido.setConcluidoEm(LocalDateTime.now());
+            progressoConcluido.setAtualizadoEm(LocalDateTime.now());
+            progressoNoRepository.save(progressoConcluido);
+        }
+
         String mensagem;
         if (checkpoint) {
             if (bloqueadoPorTentativas) {

@@ -1,3 +1,13 @@
+USE master IF EXISTS(select * from sys.databases where name='bd_cursify') 
+--DROP DATABASE bd_cursify
+GO
+-- CRIAR UM BANCO DE DADOS
+CREATE DATABASE bd_cursify
+GO
+-- ACESSAR O BANCO DE DADOS
+USE bd_cursify
+GO
+
 CREATE TABLE usuarios (
     id BIGINT IDENTITY(1,1) PRIMARY KEY,
     nome NVARCHAR(100) NOT NULL,
@@ -36,7 +46,7 @@ CREATE TABLE cursos (
     criado_em DATETIME2 NOT NULL DEFAULT GETDATE(),
     atualizado_em DATETIME2 NULL,
     CONSTRAINT fk_cursos_categoria FOREIGN KEY (categoria_id) REFERENCES categorias(id),
-    CONSTRAINT fk_cursos_professor FOREIGN KEY (professor_id) REFERENCES usuarios(id)
+    CONSTRAINT fk_cursos_professor FOREIGN KEY (professor_id) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE INDEX ix_cursos_categoria ON cursos(categoria_id);
@@ -134,7 +144,7 @@ CREATE TABLE trilhas (
     xp_total INT NOT NULL DEFAULT 0,
     ativo BIT NOT NULL DEFAULT 1,
     criado_em DATETIME2 NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT fk_trilhas_professor FOREIGN KEY (professor_id) REFERENCES usuarios(id) ON DELETE SET NULL
+    CONSTRAINT fk_trilhas_professor FOREIGN KEY (professor_id) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE TABLE nos_trilha (
@@ -209,7 +219,7 @@ CREATE TABLE respostas_usuario (
     respondido_em DATETIME2 NOT NULL DEFAULT GETDATE(),
     CONSTRAINT fk_respostas_usuario_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_respostas_usuario_questao FOREIGN KEY (questao_id) REFERENCES questoes(id) ON DELETE CASCADE,
-    CONSTRAINT fk_respostas_usuario_alternativa FOREIGN KEY (alternativa_id) REFERENCES alternativas(id) ON DELETE SET NULL
+    CONSTRAINT fk_respostas_usuario_alternativa FOREIGN KEY (alternativa_id) REFERENCES alternativas(id) ON DELETE NO ACTION
 );
 
 CREATE INDEX ix_respostas_usuario_questao ON respostas_usuario(usuario_id, questao_id);
@@ -227,7 +237,7 @@ CREATE TABLE projetos_enviados (
     avaliado_em DATETIME2 NULL,
     CONSTRAINT fk_projetos_enviados_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
     CONSTRAINT fk_projetos_enviados_no FOREIGN KEY (no_id) REFERENCES nos_trilha(id) ON DELETE CASCADE,
-    CONSTRAINT fk_projetos_enviados_avaliado_por FOREIGN KEY (avaliado_por) REFERENCES usuarios(id) ON DELETE SET NULL
+    CONSTRAINT fk_projetos_enviados_avaliado_por FOREIGN KEY (avaliado_por) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE TABLE xp_usuario (
@@ -290,7 +300,7 @@ CREATE TABLE conversas (
     trilha_id BIGINT NULL,
     nome NVARCHAR(100) NULL,
     criado_em DATETIME2 NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT fk_conversas_trilha FOREIGN KEY (trilha_id) REFERENCES trilhas(id) ON DELETE SET NULL
+    CONSTRAINT fk_conversas_trilha FOREIGN KEY (trilha_id) REFERENCES trilhas(id) ON DELETE NO ACTION
 );
 
 CREATE TABLE participantes_conversa (
@@ -302,7 +312,7 @@ CREATE TABLE participantes_conversa (
     arquivado BIT NOT NULL DEFAULT 0,
     CONSTRAINT uq_participantes_conversa UNIQUE (conversa_id, usuario_id),
     CONSTRAINT fk_participantes_conversa_conversa FOREIGN KEY (conversa_id) REFERENCES conversas(id) ON DELETE CASCADE,
-    CONSTRAINT fk_participantes_conversa_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    CONSTRAINT fk_participantes_conversa_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE INDEX ix_participantes_conversa_usuario ON participantes_conversa(usuario_id);
@@ -318,7 +328,7 @@ CREATE TABLE mensagens (
     editado_em DATETIME2 NULL,
     deletado BIT NOT NULL DEFAULT 0,
     CONSTRAINT fk_mensagens_conversa FOREIGN KEY (conversa_id) REFERENCES conversas(id) ON DELETE CASCADE,
-    CONSTRAINT fk_mensagens_remetente FOREIGN KEY (remetente_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    CONSTRAINT fk_mensagens_remetente FOREIGN KEY (remetente_id) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE INDEX ix_mensagens_conversa_enviado_em ON mensagens(conversa_id, enviado_em DESC);
@@ -331,7 +341,7 @@ CREATE TABLE mensagens_lidas (
     lido_em DATETIME2 NOT NULL DEFAULT GETDATE(),
     CONSTRAINT uq_mensagens_lidas UNIQUE (mensagem_id, usuario_id),
     CONSTRAINT fk_mensagens_lidas_mensagem FOREIGN KEY (mensagem_id) REFERENCES mensagens(id) ON DELETE CASCADE,
-    CONSTRAINT fk_mensagens_lidas_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    CONSTRAINT fk_mensagens_lidas_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE NO ACTION
 );
 
 CREATE INDEX ix_mensagens_lidas_usuario ON mensagens_lidas(usuario_id);
@@ -437,3 +447,32 @@ INSERT INTO presenca_usuarios (usuario_id, online, ultimo_acesso_chat) VALUES
 (1, 1, GETDATE()),
 (2, 1, GETDATE()),
 (3, 0, GETDATE());
+
+SELECT * FROM usuarios
+SELECT * FROM categorias
+SELECT * FROM cursos
+SELECT * FROM modulos
+SELECT * FROM aulas
+SELECT * FROM matriculas
+SELECT * FROM progresso_aulas
+SELECT * FROM avaliacoes
+SELECT * FROM materiais
+SELECT * FROM certificados
+SELECT * FROM trilhas
+SELECT * FROM nos_trilha
+SELECT * FROM conteudo_no
+SELECT * FROM questoes
+SELECT * FROM alternativas
+SELECT * FROM progresso_nos
+SELECT * FROM respostas_usuario
+SELECT * FROM projetos_enviados
+SELECT * FROM xp_usuario
+SELECT * FROM conquistas
+SELECT * FROM conquistas_usuario
+SELECT * FROM certificados_trilha
+SELECT * FROM notificacoes
+SELECT * FROM conversas
+SELECT * FROM participantes_conversa
+SELECT * FROM mensagens
+SELECT * FROM mensagens_lidas
+SELECT * FROM presenca_usuarios

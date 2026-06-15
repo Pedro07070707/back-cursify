@@ -34,17 +34,22 @@ public class AuthService {
     }
 
     public AuthResponse cadastro(AuthCadastroRequest request) {
-        if (usuarioService.findAll().stream().anyMatch(user -> request.getEmail().equalsIgnoreCase(user.getEmail()))) {
+        String nome = request.getNome() == null ? null : request.getNome().trim();
+        String email = request.getEmail() == null ? null : request.getEmail().trim().toLowerCase();
+        String senha = request.getSenha();
+        String role = request.getRole() == null ? "USUARIO" : request.getRole().trim().toUpperCase();
+
+        if (usuarioService.findAll().stream().anyMatch(user -> email != null && email.equalsIgnoreCase(user.getEmail()))) {
             throw new BadRequestException("Ja existe um usuario com esse email");
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNome(request.getNome());
-        usuario.setEmail(request.getEmail());
-        usuario.setSenha(request.getSenha());
-        usuario.setNivelAcesso(request.getRole());
+        usuario.setNome(nome);
+        usuario.setEmail(email);
+        usuario.setSenha(senha);
+        usuario.setNivelAcesso(role);
         usuario.setDataCadastro(LocalDateTime.now());
-        usuario.setStatusUsuario("Ativo");
+        usuario.setAtivo(true);
         Usuario salvo = usuarioService.save(usuario);
         return buildAuthResponse(salvo);
     }
@@ -104,7 +109,7 @@ public class AuthService {
     }
 
     private void validateActiveUser(Usuario usuario) {
-        if (usuario.getStatusUsuario() != null && !"Ativo".equalsIgnoreCase(usuario.getStatusUsuario())) {
+        if (Boolean.FALSE.equals(usuario.getAtivo())) {
             throw new BadRequestException("Usuario desativado");
         }
     }

@@ -67,7 +67,8 @@ public class UsuariosApiController {
     @PutMapping("/admin/usuarios/{id}/status")
     public ResponseEntity<ApiResponse<UsuarioResponse>> alterarStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Usuario usuario = usuarioService.findById(id);
-        usuario.setStatusUsuario(body.getOrDefault("statusUsuario", usuario.getStatusUsuario()));
+        String status = body.getOrDefault("statusUsuario", Boolean.TRUE.equals(usuario.getAtivo()) ? "Ativo" : "Inativo");
+        usuario.setAtivo(!"Inativo".equalsIgnoreCase(status));
         return ResponseEntity.ok(new ApiResponse<>(new UsuarioResponse(usuarioService.saveRaw(usuario)), "Status atualizado", HttpStatus.OK.value()));
     }
 

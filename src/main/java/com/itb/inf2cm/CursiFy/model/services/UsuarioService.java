@@ -29,8 +29,8 @@ public class UsuarioService {
         if (usuario.getNivelAcesso() == null || usuario.getNivelAcesso().isBlank()) {
             usuario.setNivelAcesso("USUARIO");
         }
-        if (usuario.getStatusUsuario() == null || usuario.getStatusUsuario().isBlank()) {
-            usuario.setStatusUsuario("Ativo");
+        if (usuario.getAtivo() == null) {
+            usuario.setAtivo(true);
         }
         if (usuario.getSenha() != null && !usuario.getSenha().startsWith("$2")) {
             usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
@@ -65,8 +65,8 @@ public class UsuarioService {
         if (usuario.getDataCadastro() != null) {
             usuarioExistente.setDataCadastro(usuario.getDataCadastro());
         }
-        if (usuario.getStatusUsuario() != null) {
-            usuarioExistente.setStatusUsuario(usuario.getStatusUsuario());
+        if (usuario.getAtivo() != null) {
+            usuarioExistente.setAtivo(usuario.getAtivo());
         }
         return usuarioRepository.save(usuarioExistente);
     }

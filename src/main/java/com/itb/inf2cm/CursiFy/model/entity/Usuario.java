@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Usuario")
+@Table(name = "usuarios")
 public class Usuario{
 
     @Id
@@ -15,23 +15,29 @@ public class Usuario{
     @Column(length = 100, nullable = false)
     private String nome;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 150, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "senha_hash", length = 255, nullable = false)
     private String senha;
 
-    @Column(length = 10, nullable = true)
+    @Column(name = "role", length = 20, nullable = false)
     private String nivelAcesso;
 
-   // @Column(length = 200, nullable = true)
-    //private String foto;
+    @Column(name = "foto_url", length = 500)
+    private String fotoUrl;
 
-    @Column(nullable = false)
+    @Column(length = 500)
+    private String bio;
+
+    @Column(name = "criado_em", nullable = false)
     private LocalDateTime dataCadastro;
 
-    @Column(length = 20, nullable = false)
-    private String statusUsuario;
+    @Column(name = "ativo", nullable = false)
+    private Boolean ativo;
+
+    @Column(name = "atualizado_em")
+    private LocalDateTime atualizadoEm;
 
     public Long getId() {
         return id;
@@ -81,11 +87,19 @@ public class Usuario{
         this.dataCadastro = dataCadastro;
     }
 
-    public String getStatusUsuario() {
-        return statusUsuario;
-    }
+    public String getFotoUrl() { return fotoUrl; }
 
-    public void setStatusUsuario(String statusUsuario) {
-        this.statusUsuario = statusUsuario;
-    }
+    public void setFotoUrl(String fotoUrl) { this.fotoUrl = fotoUrl; }
+
+    public String getBio() { return bio; }
+
+    public void setBio(String bio) { this.bio = bio; }
+
+    public Boolean getAtivo() { return ativo; }
+
+    public void setAtivo(Boolean ativo) { this.ativo = ativo; }
+
+    public LocalDateTime getAtualizadoEm() { return atualizadoEm; }
+
+    public void setAtualizadoEm(LocalDateTime atualizadoEm) { this.atualizadoEm = atualizadoEm; }
 }

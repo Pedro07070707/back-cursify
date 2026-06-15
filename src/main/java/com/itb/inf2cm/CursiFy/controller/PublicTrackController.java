@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/public/trilhas")
+@RequestMapping({"/api/trilhas", "/api/public/trilhas"})
 public class PublicTrackController {
 
     @Autowired
