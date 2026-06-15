@@ -22,7 +22,7 @@ public class Atividades {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
-    @JsonIgnoreProperties({"senha", "email", "dataCadastro", "statusUsuario", "nivelAcesso"})
+    @JsonIgnoreProperties({"senha", "email", "dataCadastro", "statusUsuario", "nivelAcesso", "ativo"})
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.EAGER)

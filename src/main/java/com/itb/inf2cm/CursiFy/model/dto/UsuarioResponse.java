@@ -9,6 +9,7 @@ public class UsuarioResponse {
     private String nome;
     private String email;
     private String nivelAcesso;
+    private String role;
     private LocalDateTime dataCadastro;
     private String statusUsuario;
 
@@ -17,6 +18,7 @@ public class UsuarioResponse {
         this.nome = usuario.getNome();
         this.email = usuario.getEmail();
         this.nivelAcesso = usuario.getNivelAcesso();
+        this.role = usuario.getNivelAcesso();
         this.dataCadastro = usuario.getDataCadastro();
         this.statusUsuario = Boolean.FALSE.equals(usuario.getAtivo()) ? "Inativo" : "Ativo";
     }
@@ -25,6 +27,7 @@ public class UsuarioResponse {
     public String getNome() { return nome; }
     public String getEmail() { return email; }
     public String getNivelAcesso() { return nivelAcesso; }
+    public String getRole() { return role; }
     public LocalDateTime getDataCadastro() { return dataCadastro; }
     public String getStatusUsuario() { return statusUsuario; }
 }

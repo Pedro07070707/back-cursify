@@ -90,7 +90,15 @@ public class ProgressoService {
                 false,
                 1,
                 "Projeto enviado para avaliacao. Aguarde o retorno do professor.",
-                java.util.List.of(new ResponderNoItemResponse(null, null, false, 1, "Projeto enviado com status " + projeto.getStatus()))
+                java.util.List.of(new ResponderNoItemResponse(
+                    null,
+                    "Projeto",
+                    null,
+                    null,
+                    false,
+                    1,
+                    "Projeto enviado com status " + projeto.getStatus()
+                ))
             );
         }
         List<Questao> questoes = questaoRepository.findByNoIdOrderByOrdemAsc(noId);
@@ -125,6 +133,11 @@ public class ProgressoService {
                 } else {
                     feedback = "Nenhuma alternativa selecionada.";
                 }
+                Long alternativaCorretaId = alternativaRepository.findByQuestaoIdOrderByOrdemAsc(questao.getId()).stream()
+                    .filter(Alternativa::getCorreta)
+                    .map(Alternativa::getId)
+                    .findFirst()
+                    .orElse(null);
                 if (correta) {
                     acertos++;
                 }
@@ -137,7 +150,15 @@ public class ProgressoService {
                 respostaUsuario.setTentativaNumero(tentativaNumero);
                 respostaUsuario.setRespondidoEm(LocalDateTime.now());
                 respostaUsuarioRepository.save(respostaUsuario);
-                detalhes.add(new ResponderNoItemResponse(questao.getId(), alternativaEscolhidaId, correta, tentativaNumero, feedback));
+                detalhes.add(new ResponderNoItemResponse(
+                    questao.getId(),
+                    questao.getEnunciado(),
+                    alternativaEscolhidaId,
+                    alternativaCorretaId,
+                    correta,
+                    tentativaNumero,
+                    feedback
+                ));
             }
         }
         Double nota = total == 0 ? 0.0 : (acertos * 10.0) / total;
