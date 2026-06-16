@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -44,5 +45,10 @@ public class UsuarioService {
 
     public void delete(Long id) {
         usuarioRepository.delete(findById(id));
+    }
+
+    public Optional<Usuario> login(String email, String senhaPlana) {
+        return usuarioRepository.findByEmail(email)
+                .filter(u -> passwordEncoder.matches(senhaPlana, u.getSenha()));
     }
 }
