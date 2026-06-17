@@ -24,9 +24,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity <Usuario> save(@RequestBody Usuario usuario) {
-        Usuario novo = usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+    public ResponseEntity <Object> save(@RequestBody Usuario usuario) {
+        try {
+            Usuario novo = usuarioService.save(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
@@ -42,6 +47,9 @@ public class UsuarioController {
                             "message", "O id informado não é válido: " + id
                     )
             );
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
         catch (RuntimeException e) {
             return ResponseEntity.status(404).body(
@@ -121,6 +129,7 @@ public class UsuarioController {
                 "id", u.getId(),
                 "nome", u.getNome(),
                 "email", u.getEmail(),
+                "cpf", u.getCpf(),
                 "nivelAcesso", u.getNivelAcesso()
         ));
     }

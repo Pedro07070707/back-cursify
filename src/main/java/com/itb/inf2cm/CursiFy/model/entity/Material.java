@@ -25,7 +25,7 @@ public class Material {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
-    @JsonIgnoreProperties({"senha", "email", "dataCadastro", "statusUsuario", "nivelAcesso"})
+    @JsonIgnoreProperties({"senha", "cpf", "email", "dataCadastro", "statusUsuario", "nivelAcesso"})
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.EAGER)
