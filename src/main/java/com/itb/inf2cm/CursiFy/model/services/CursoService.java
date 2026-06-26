@@ -2,6 +2,7 @@ package com.itb.inf2cm.CursiFy.model.services;
 
 import com.itb.inf2cm.CursiFy.model.entity.Curso;
 import com.itb.inf2cm.CursiFy.model.repository.CursoRepository;
+import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,9 @@ public class CursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @Autowired
+    private UsuarioCursoRepository usuarioCursoRepository;
+
     public List<Curso> findAll() {
         return cursoRepository.findAll();
     }
@@ -20,8 +24,13 @@ public class CursoService {
     public Curso save(Curso curso) {
         curso.setStatusCurso("Ativo");
         curso.setDataCriacao(java.time.LocalDateTime.now());
+        Curso saved = cursoRepository.save(curso);
 
-        return cursoRepository.save(curso);
+        if (curso.getProfessorId() != null) {
+            usuarioCursoRepository.insertNative(curso.getProfessorId(), saved.getId());
+        }
+
+        return saved;
     }
 
     public Curso findById(Long id) {
@@ -33,11 +42,8 @@ public class CursoService {
         Curso cursoExistente = findById(id);
         cursoExistente.setNome(curso.getNome());
         cursoExistente.setDescricao(curso.getDescricao());
-        //curso.setCategoria(curso.getCategoria());
-        //curso.setCargaHoraria(curso.getCargaHoraria());
         cursoExistente.setCategoria(curso.getCategoria());
         cursoExistente.setCargaHoraria(curso.getCargaHoraria());
-        //cursoExistente.setPreco(curso.getPreco());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
         return cursoRepository.save(cursoExistente);

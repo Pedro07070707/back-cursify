@@ -39,6 +39,9 @@ public class Curso{
     @Column(length = 20, nullable = false)
     private String statusCurso;
 
+    @Transient
+    private Long professorId;
+
     public Long getId() {
         return id;
     }
@@ -93,5 +96,13 @@ public class Curso{
 
     public void setStatusCurso(String statusCurso) {
         this.statusCurso = statusCurso;
+    }
+
+    public Long getProfessorId() {
+        return professorId;
+    }
+
+    public void setProfessorId(Long professorId) {
+        this.professorId = professorId;
     }
 }

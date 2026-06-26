@@ -1,6 +1,7 @@
 package com.itb.inf2cm.CursiFy.model.services;
 
 import com.itb.inf2cm.CursiFy.model.entity.Usuario;
+import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
 import com.itb.inf2cm.CursiFy.model.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,9 @@ public class UsuarioService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UsuarioCursoRepository usuarioCursoRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -52,6 +56,7 @@ public class UsuarioService {
     }
 
     public void delete(Long id) {
+        usuarioCursoRepository.deleteByUsuarioIdNative(id);
         usuarioRepository.delete(findById(id));
     }
 

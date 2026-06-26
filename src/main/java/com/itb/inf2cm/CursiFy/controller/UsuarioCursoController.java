@@ -1,5 +1,6 @@
 package com.itb.inf2cm.CursiFy.controller;
 
+import com.itb.inf2cm.CursiFy.model.entity.Curso;
 import com.itb.inf2cm.CursiFy.model.entity.UsuarioCurso;
 import com.itb.inf2cm.CursiFy.model.services.UsuarioCursoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ public class UsuarioCursoController {
     @GetMapping
     public ResponseEntity <List<UsuarioCurso>> findAll() {
         return ResponseEntity.ok(usuarioCursoService.findAll());
+    }
+
+    @GetMapping("/professor/{usuarioId}")
+    public ResponseEntity<List<Curso>> findCursosByProfessor(@PathVariable Long usuarioId) {
+        return ResponseEntity.ok(usuarioCursoService.findCursosByProfessor(usuarioId));
     }
 
     /*@PostMapping
