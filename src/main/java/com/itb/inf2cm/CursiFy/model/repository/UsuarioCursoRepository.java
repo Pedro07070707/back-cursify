@@ -15,6 +15,11 @@ public interface UsuarioCursoRepository extends JpaRepository<UsuarioCurso, Long
 
     @Modifying
     @Transactional
+    @Query(value = "DELETE FROM UsuarioCurso WHERE curso_id = :cursoId", nativeQuery = true)
+    void deleteByCursoIdNative(@Param("cursoId") Long cursoId);
+
+    @Modifying
+    @Transactional
     @Query(value = "DELETE FROM UsuarioCurso WHERE usuario_id = :usuarioId", nativeQuery = true)
     void deleteByUsuarioIdNative(@Param("usuarioId") Long usuarioId);
 
