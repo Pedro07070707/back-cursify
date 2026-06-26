@@ -21,14 +21,15 @@ public class Usuario{
     @Column(length = 100, nullable = false)
     private String senha;
 
-    @Column(name = "cpf", length = 11, nullable = false, columnDefinition = "CHAR(11)")
+    @Column(length = 11, nullable = false)
     private String cpf;
 
     @Column(length = 10, nullable = true)
     private String nivelAcesso;
 
-   // @Column(length = 200, nullable = true)
-    //private String foto;
+    @Lob
+    @Column(nullable = true)
+    private byte[] foto;
 
     @Column(nullable = false)
     private LocalDateTime dataCadastro;
@@ -83,6 +84,10 @@ public class Usuario{
     public void setNivelAcesso(String nivelAcesso) {
         this.nivelAcesso = nivelAcesso;
     }
+
+    public byte[] getFoto() { return foto; }
+
+    public void setFoto(byte[] foto) { this.foto = foto; }
 
     public LocalDateTime getDataCadastro() {
         return dataCadastro;

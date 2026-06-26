@@ -46,6 +46,7 @@ public class UsuarioService {
         atualizarSenha(usuarioExistente, usuario.getSenha());
         usuarioExistente.setCpf(usuario.getCpf());
         usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
+        usuarioExistente.setFoto(usuario.getFoto());
         usuarioExistente.setStatusUsuario(normalizarStatus(usuario.getStatusUsuario()));
         return usuarioRepository.save(usuarioExistente);
     }
