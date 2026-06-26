@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
@@ -23,9 +24,14 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity <Usuario> save(@RequestBody Usuario usuario) {
-        Usuario novo = usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+    public ResponseEntity <Object> save(@RequestBody Usuario usuario) {
+        try {
+            Usuario novo = usuarioService.save(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
@@ -41,6 +47,9 @@ public class UsuarioController {
                             "message", "O id informado não é válido: " + id
                     )
             );
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
         }
         catch (RuntimeException e) {
             return ResponseEntity.status(404).body(
@@ -102,5 +111,26 @@ public class UsuarioController {
                     )
             );
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@RequestBody Map<String, String> credentials) {
+        String email = credentials.get("email");
+        String senha = credentials.get("senha");
+        Optional<Usuario> usuario = usuarioService.login(email, senha);
+        if (usuario.isEmpty()) {
+            return ResponseEntity.status(401).body(Map.of("message", "Email ou senha incorretos."));
+        }
+        Usuario u = usuario.get();
+        if (!"Ativo".equals(u.getStatusUsuario())) {
+            return ResponseEntity.status(403).body(Map.of("message", "Sua conta foi desativada. Entre em contato com o administrador."));
+        }
+        return ResponseEntity.ok(Map.of(
+                "id", u.getId(),
+                "nome", u.getNome(),
+                "email", u.getEmail(),
+                "cpf", u.getCpf(),
+                "nivelAcesso", u.getNivelAcesso()
+        ));
     }
 }

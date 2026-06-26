@@ -21,6 +21,9 @@ public class Usuario{
     @Column(length = 100, nullable = false)
     private String senha;
 
+    @Column(name = "cpf", length = 11, nullable = false, columnDefinition = "CHAR(11)")
+    private String cpf;
+
     @Column(length = 10, nullable = true)
     private String nivelAcesso;
 
@@ -63,6 +66,14 @@ public class Usuario{
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public String getNivelAcesso() {
