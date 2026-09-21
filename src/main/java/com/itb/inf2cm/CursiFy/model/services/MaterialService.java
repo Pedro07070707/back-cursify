@@ -35,7 +35,7 @@ public class MaterialService {
         materialExistente.setSubtitulo(material.getSubtitulo());
         materialExistente.setConteudo(material.getConteudo());
         materialExistente.setLink(material.getLink());
-        materialExistente.setStatusMaterial(material.getStatusMaterial());
+        materialExistente.setStatusMaterial(material.getStatusMaterial() == null || material.getStatusMaterial().isBlank() ? "Nao concluido" : material.getStatusMaterial());
         if (material.getUsuario() != null) {
             materialExistente.setUsuario(material.getUsuario());
         }

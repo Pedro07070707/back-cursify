@@ -24,7 +24,10 @@ public class MaterialController {
 
     @PostMapping
     public ResponseEntity <Material> save(@RequestBody Material material) {
-        Material novo = materialService.save(material);
+                if (material.getStatusMaterial() == null || material.getStatusMaterial().isBlank()) {
+            material.setStatusMaterial("Nao concluido");
+        }
+Material novo = materialService.save(material);
         return ResponseEntity.status(HttpStatus.CREATED).body(novo);
     }
 

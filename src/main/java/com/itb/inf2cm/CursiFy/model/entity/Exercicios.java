@@ -2,6 +2,8 @@ package com.itb.inf2cm.CursiFy.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Exercicios")
@@ -20,6 +22,23 @@ public class Exercicios {
     @Column(length = 500, nullable = false)
     private String conteudo;
 
+    @Column(length = 2000, nullable = false)
+    private String enunciado;
+
+    @ElementCollection
+    @CollectionTable(name = "Exercicios_alternativas", joinColumns = @JoinColumn(name = "exercicio_id"))
+    @Column(name = "alternativa", length = 500, nullable = false)
+    private List<String> alternativas = new ArrayList<>();
+
+    @Column(length = 500, nullable = false)
+    private String respostaCorreta;
+
+    @Column(length = 2000)
+    private String explicacao;
+
+    @Column(nullable = false)
+    private Integer pontos = 1;
+
     @Column(length = 200, nullable = true)
     private String link;
 
@@ -33,7 +52,15 @@ public class Exercicios {
     private Curso curso;
 
     @Column(length = 20, nullable = false)
-    private String statusExercicios;
+    private String statusExercicios = "Nao concluido";
+
+    @PrePersist
+    @PreUpdate
+    private void garantirStatus() {
+        if (statusExercicios == null || statusExercicios.isBlank()) {
+            statusExercicios = "Nao concluido";
+        }
+    }
 
     public Long getId() {
         return id;
@@ -66,6 +93,17 @@ public class Exercicios {
     public void setConteudo(String conteudo) {
         this.conteudo = conteudo;
     }
+
+    public String getEnunciado() { return enunciado; }
+    public void setEnunciado(String enunciado) { this.enunciado = enunciado; }
+    public List<String> getAlternativas() { return alternativas; }
+    public void setAlternativas(List<String> alternativas) { this.alternativas = alternativas; }
+    public String getRespostaCorreta() { return respostaCorreta; }
+    public void setRespostaCorreta(String respostaCorreta) { this.respostaCorreta = respostaCorreta; }
+    public String getExplicacao() { return explicacao; }
+    public void setExplicacao(String explicacao) { this.explicacao = explicacao; }
+    public Integer getPontos() { return pontos; }
+    public void setPontos(Integer pontos) { this.pontos = pontos; }
 
     public String getLink() {
         return link;

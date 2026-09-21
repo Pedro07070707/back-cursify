@@ -33,7 +33,15 @@ public class Material {
     private Curso curso;
 
     @Column(length = 20, nullable = false)
-    private String statusMaterial;
+    private String statusMaterial = "Nao concluido";
+
+    @PrePersist
+    @PreUpdate
+    private void garantirStatus() {
+        if (statusMaterial == null || statusMaterial.isBlank()) {
+            statusMaterial = "Nao concluido";
+        }
+    }
 
     public Long getId() {
         return id;
