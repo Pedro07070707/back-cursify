@@ -19,105 +19,34 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity <List<Usuario>> findAll() {
+    public ResponseEntity<List<Usuario>> findAll() {
         return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity <Object> save(@RequestBody Usuario usuario) {
-        try {
-            Usuario novo = usuarioService.save(usuario);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novo);
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
+    public ResponseEntity<Object> save(@RequestBody Usuario usuario) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> listarUsuarioPorId(@PathVariable String id) {
-        try {
-            return ResponseEntity.ok(usuarioService.findById(Long.parseLong(id)));
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<Usuario> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarUsuario(@PathVariable String id, @RequestBody Usuario usuario){
-        try {
-            return ResponseEntity.ok(usuarioService.update(Long.parseLong(id), usuario));
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario usuario) {
+        return ResponseEntity.ok(usuarioService.update(id, usuario));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarUsuario(@PathVariable String id){
-        try {
-            usuarioService.delete(Long.parseLong(id));
-            return ResponseEntity.ok("Usuário com o id: " + id + " deletado com sucesso.");
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        usuarioService.delete(id);
+        return ResponseEntity.ok("Usuário com o id: " + id + " deletado com sucesso.");
     }
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody Map<String, String> credentials) {
-        String email = credentials.get("email");
-        String senha = credentials.get("senha");
-        Optional<Usuario> usuario = usuarioService.login(email, senha);
+        Optional<Usuario> usuario = usuarioService.login(credentials.get("email"), credentials.get("senha"));
         if (usuario.isEmpty()) {
             return ResponseEntity.status(401).body(Map.of("message", "Email ou senha incorretos."));
         }

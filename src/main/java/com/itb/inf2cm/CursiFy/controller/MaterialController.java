@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/material")
@@ -18,92 +17,28 @@ public class MaterialController {
     private MaterialService materialService;
 
     @GetMapping
-    public ResponseEntity <List<Material>> findAll() {
+    public ResponseEntity<List<Material>> findAll() {
         return ResponseEntity.ok(materialService.findAll());
     }
 
     @PostMapping
-    public ResponseEntity <Material> save(@RequestBody Material material) {
-                if (material.getStatusMaterial() == null || material.getStatusMaterial().isBlank()) {
-            material.setStatusMaterial("Nao concluido");
-        }
-Material novo = materialService.save(material);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novo);
+    public ResponseEntity<Material> save(@RequestBody Material material) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(materialService.save(material));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> listarMaterialPorId(@PathVariable String id) {
-        try {
-            return ResponseEntity.ok(materialService.findById(Long.parseLong(id)));
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<Material> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(materialService.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarMaterial(@PathVariable String id, @RequestBody Material material){
-        try {
-            return ResponseEntity.ok(materialService.update(Long.parseLong(id), material));
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<Material> update(@PathVariable Long id, @RequestBody Material material) {
+        return ResponseEntity.ok(materialService.update(id, material));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarMaterial(@PathVariable String id){
-        try {
-            materialService.delete(Long.parseLong(id));
-            return ResponseEntity.ok("Usuário com o id: " + id + " deletado com sucesso.");
-        }
-        catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(
-                    Map.of(
-                            "status", 400,
-                            "error", "Bad Request",
-                            "message", "O id informado não é válido: " + id
-                    )
-            );
-        }
-        catch (RuntimeException e) {
-            return ResponseEntity.status(404).body(
-                    Map.of(
-                            "status", 404,
-                            "error", "Not Found",
-                            "message", "Usuário não encontrado com o id: " + id
-                    )
-            );
-        }
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        materialService.delete(id);
+        return ResponseEntity.ok("Material com o id: " + id + " deletado com sucesso.");
     }
 }
