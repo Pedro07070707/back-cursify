@@ -39,6 +39,9 @@ public class Curso{
     @Column(length = 20, nullable = false)
     private String statusCurso;
 
+    @Column(name = "numero_alunos", nullable = false)
+    private Integer numeroAlunos = 0;
+
     @Transient
     private Long professorId;
 
@@ -96,6 +99,14 @@ public class Curso{
 
     public void setStatusCurso(String statusCurso) {
         this.statusCurso = statusCurso;
+    }
+
+    public Integer getNumeroAlunos() {
+        return numeroAlunos;
+    }
+
+    public void setNumeroAlunos(Integer numeroAlunos) {
+        this.numeroAlunos = numeroAlunos == null ? 0 : numeroAlunos;
     }
 
     public Long getProfessorId() {

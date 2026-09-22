@@ -47,6 +47,12 @@ public class UsuarioCursoController {
                 "cursoId", cursoId, "progresso", salvo.getProgresso()));
     }
 
+    @DeleteMapping("/inscrever/{usuarioId}/{cursoId}")
+    public ResponseEntity<Void> removerInscricao(@PathVariable Long usuarioId, @PathVariable Long cursoId) {
+        usuarioCursoService.removeEnrollment(usuarioId, cursoId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/ocupacao/{cursoId}")
     public ResponseEntity<Map<String, Object>> ocupacao(@PathVariable Long cursoId) {
         long matriculados = usuarioCursoService.countStudents(cursoId);

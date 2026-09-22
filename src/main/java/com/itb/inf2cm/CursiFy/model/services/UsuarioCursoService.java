@@ -8,6 +8,7 @@ import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
 import com.itb.inf2cm.CursiFy.model.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,16 +32,9 @@ public class UsuarioCursoService {
     }
 
     public long countStudents(Long cursoId) {
-        return usuarioCursoRepository.findAllByCursoId(cursoId).stream()
-                .filter(uc -> uc.getUsuario() != null)
-                .filter(uc -> {
-                    String role = uc.getUsuario().getNivelAcesso();
-                    return role != null && (role.equalsIgnoreCase("ALUNO") || role.equalsIgnoreCase("STUDENT"));
-                })
-                .map(UsuarioCurso::getUsuario)
-                .map(usuario -> usuario.getId())
-                .distinct()
-                .count();
+        return cursoRepository.findById(cursoId)
+                .map(curso -> (long) Math.max(0, curso.getNumeroAlunos() == null ? 0 : curso.getNumeroAlunos()))
+                .orElseThrow(() -> new RuntimeException("Curso nao encontrado"));
     }
 
     public List<Curso> findCursosByProfessor(Long usuarioId) {
@@ -83,17 +77,32 @@ public class UsuarioCursoService {
         return usuarioCursoRepository.save(atual);
     }
 
+    @Transactional
     public UsuarioCurso enroll(Long usuarioId, Long cursoId) {
         Usuario usuario = getStudent(usuarioId);
         List<UsuarioCurso> existentes = usuarioCursoRepository.findByUsuarioIdAndCursoId(usuarioId, cursoId);
         if (!existentes.isEmpty()) return existentes.get(0);
-        if (countStudents(cursoId) >= 100) {
+        Curso curso = cursoRepository.findById(cursoId).orElseThrow(() -> new RuntimeException("Curso nao encontrado"));
+        if (cursoRepository.reserveStudentSpot(cursoId) == 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Curso cheio");
         }
         UsuarioCurso novo = new UsuarioCurso();
         novo.setUsuario(usuario);
-        novo.setCurso(cursoRepository.findById(cursoId).orElseThrow());
+        novo.setCurso(curso);
         return usuarioCursoRepository.save(novo);
+    }
+
+    @Transactional
+    public void removeEnrollment(Long usuarioId, Long cursoId) {
+        UsuarioCurso inscricao = usuarioCursoRepository.findByUsuarioIdAndCursoId(usuarioId, cursoId).stream()
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Matricula nao encontrada"));
+        getStudent(usuarioId);
+        if (Boolean.TRUE.equals(inscricao.getConcluido()) || (inscricao.getProgresso() != null && inscricao.getProgresso() >= 100)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Cursos concluidos nao podem ser removidos");
+        }
+        usuarioCursoRepository.delete(inscricao);
+        cursoRepository.releaseStudentSpot(cursoId);
     }
 
     private Usuario getStudent(Long usuarioId) {
