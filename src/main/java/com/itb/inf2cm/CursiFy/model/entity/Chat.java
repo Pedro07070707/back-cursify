@@ -12,6 +12,10 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "mensagem_id", nullable = false)
+    private Mensagem mensagem;
+
     @Column(length = 50, nullable = false)
     private String remetente;
 
@@ -28,6 +32,8 @@ public class Chat {
     public void setId(Long id) {
         this.id = id;
     }
+    public Mensagem getMensagem() { return mensagem; }
+    public void setMensagem(Mensagem mensagem) { this.mensagem = mensagem; }
 
     public String getRemetente() {
         return remetente;

@@ -21,6 +21,12 @@ public class Mensagem {
     @Column(length = 20, nullable = false)
     private String statusMensagem;
 
+    @PrePersist
+    private void defaults() {
+        if (dataMensagem == null) dataMensagem = LocalDateTime.now();
+        if (statusMensagem == null || statusMensagem.isBlank()) statusMensagem = "Enviado";
+    }
+
     public Long getId() {
         return id;
     }

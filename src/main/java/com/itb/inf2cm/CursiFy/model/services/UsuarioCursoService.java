@@ -2,13 +2,17 @@ package com.itb.inf2cm.CursiFy.model.services;
 
 import com.itb.inf2cm.CursiFy.model.entity.Curso;
 import com.itb.inf2cm.CursiFy.model.entity.UsuarioCurso;
+import com.itb.inf2cm.CursiFy.model.entity.Usuario;
 import com.itb.inf2cm.CursiFy.model.repository.CursoRepository;
 import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
+import com.itb.inf2cm.CursiFy.model.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UsuarioCursoService {
@@ -19,8 +23,24 @@ public class UsuarioCursoService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List<UsuarioCurso> findAll() {
         return usuarioCursoRepository.findAll();
+    }
+
+    public long countStudents(Long cursoId) {
+        return usuarioCursoRepository.findAllByCursoId(cursoId).stream()
+                .filter(uc -> uc.getUsuario() != null)
+                .filter(uc -> {
+                    String role = uc.getUsuario().getNivelAcesso();
+                    return role != null && (role.equalsIgnoreCase("ALUNO") || role.equalsIgnoreCase("STUDENT"));
+                })
+                .map(UsuarioCurso::getUsuario)
+                .map(usuario -> usuario.getId())
+                .distinct()
+                .count();
     }
 
     public List<Curso> findCursosByProfessor(Long usuarioId) {
@@ -43,5 +63,46 @@ public class UsuarioCursoService {
 
     public void delete(Long id) {
         usuarioCursoRepository.delete(findById(id));
+    }
+
+    public UsuarioCurso getProgress(Long usuarioId, Long cursoId) {
+        Usuario usuario = getStudent(usuarioId);
+        List<UsuarioCurso> existentes = usuarioCursoRepository.findByUsuarioIdAndCursoId(usuarioId, cursoId);
+        if (!existentes.isEmpty()) return existentes.get(0);
+        UsuarioCurso novo = new UsuarioCurso();
+        novo.setUsuario(usuario);
+        novo.setCurso(cursoRepository.findById(cursoId).orElseThrow());
+        return novo;
+    }
+
+    public UsuarioCurso saveProgress(Long usuarioId, Long cursoId, UsuarioCurso dados) {
+        UsuarioCurso atual = getProgress(usuarioId, cursoId);
+        int progresso = Math.max(0, Math.min(100, dados.getProgresso() == null ? 0 : dados.getProgresso()));
+        atual.setProgresso(progresso);
+        atual.setConcluido(progresso >= 100);
+        return usuarioCursoRepository.save(atual);
+    }
+
+    public UsuarioCurso enroll(Long usuarioId, Long cursoId) {
+        Usuario usuario = getStudent(usuarioId);
+        List<UsuarioCurso> existentes = usuarioCursoRepository.findByUsuarioIdAndCursoId(usuarioId, cursoId);
+        if (!existentes.isEmpty()) return existentes.get(0);
+        if (countStudents(cursoId) >= 100) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Curso cheio");
+        }
+        UsuarioCurso novo = new UsuarioCurso();
+        novo.setUsuario(usuario);
+        novo.setCurso(cursoRepository.findById(cursoId).orElseThrow());
+        return usuarioCursoRepository.save(novo);
+    }
+
+    private Usuario getStudent(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+        String role = usuario.getNivelAcesso() == null ? "" : usuario.getNivelAcesso().trim().toUpperCase();
+        if (!role.equals("ALUNO") && !role.equals("STUDENT")) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Somente alunos podem se inscrever e salvar progresso");
+        }
+        return usuario;
     }
 }

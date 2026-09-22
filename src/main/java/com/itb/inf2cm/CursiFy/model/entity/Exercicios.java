@@ -36,12 +36,6 @@ public class Exercicios {
     @Column(length = 2000)
     private String explicacao;
 
-    @Column(nullable = false)
-    private Integer pontos = 1;
-
-    @Column(length = 200, nullable = true)
-    private String link;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnoreProperties({"senha", "cpf", "email", "dataCadastro", "statusUsuario", "nivelAcesso"})
@@ -102,17 +96,6 @@ public class Exercicios {
     public void setRespostaCorreta(String respostaCorreta) { this.respostaCorreta = respostaCorreta; }
     public String getExplicacao() { return explicacao; }
     public void setExplicacao(String explicacao) { this.explicacao = explicacao; }
-    public Integer getPontos() { return pontos; }
-    public void setPontos(Integer pontos) { this.pontos = pontos; }
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }

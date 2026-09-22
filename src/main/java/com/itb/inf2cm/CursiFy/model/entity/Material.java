@@ -35,11 +35,13 @@ public class Material {
     @Column(length = 20, nullable = false)
     private String statusMaterial = "Nao concluido";
 
+    private static final String STATUS_PADRAO = "Nao concluido";
+
     @PrePersist
     @PreUpdate
     private void garantirStatus() {
         if (statusMaterial == null || statusMaterial.isBlank()) {
-            statusMaterial = "Nao concluido";
+            statusMaterial = STATUS_PADRAO;
         }
     }
 
@@ -104,6 +106,8 @@ public class Material {
     }
 
     public void setStatusMaterial(String statusMaterial) {
-        this.statusMaterial = statusMaterial;
+        this.statusMaterial = statusMaterial == null || statusMaterial.isBlank()
+                ? STATUS_PADRAO
+                : statusMaterial;
     }
 }

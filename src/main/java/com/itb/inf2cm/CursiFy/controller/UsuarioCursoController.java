@@ -28,6 +28,31 @@ public class UsuarioCursoController {
         return ResponseEntity.ok(usuarioCursoService.findCursosByProfessor(usuarioId));
     }
 
+    @GetMapping("/progresso/{usuarioId}/{cursoId}")
+    public ResponseEntity<UsuarioCurso> progresso(@PathVariable Long usuarioId, @PathVariable Long cursoId) {
+        return ResponseEntity.ok(usuarioCursoService.getProgress(usuarioId, cursoId));
+    }
+
+    @PutMapping("/progresso/{usuarioId}/{cursoId}")
+    public ResponseEntity<Map<String, Object>> salvarProgresso(@PathVariable Long usuarioId, @PathVariable Long cursoId, @RequestBody UsuarioCurso dados) {
+        UsuarioCurso salvo = usuarioCursoService.saveProgress(usuarioId, cursoId, dados);
+        return ResponseEntity.ok(Map.of("id", salvo.getId(), "usuarioId", usuarioId, "cursoId", cursoId,
+                "progresso", salvo.getProgresso(), "concluido", Boolean.TRUE.equals(salvo.getConcluido())));
+    }
+
+    @PostMapping("/inscrever/{usuarioId}/{cursoId}")
+    public ResponseEntity<Map<String, Object>> inscrever(@PathVariable Long usuarioId, @PathVariable Long cursoId) {
+        UsuarioCurso salvo = usuarioCursoService.enroll(usuarioId, cursoId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("id", salvo.getId(), "usuarioId", usuarioId,
+                "cursoId", cursoId, "progresso", salvo.getProgresso()));
+    }
+
+    @GetMapping("/ocupacao/{cursoId}")
+    public ResponseEntity<Map<String, Object>> ocupacao(@PathVariable Long cursoId) {
+        long matriculados = usuarioCursoService.countStudents(cursoId);
+        return ResponseEntity.ok(Map.of("matriculados", matriculados, "limite", 100, "cheio", matriculados >= 100));
+    }
+
     /*@PostMapping
     public ResponseEntity <UsuarioCurso> save(@RequestBody UsuarioCurso usuarioCurso) {
         UsuarioCurso novo = usuarioCursoService.save(usuarioCurso);

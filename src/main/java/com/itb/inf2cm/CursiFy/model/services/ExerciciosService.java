@@ -38,8 +38,6 @@ public class ExerciciosService {
         exerciciosExistente.setAlternativas(exercicios.getAlternativas());
         exerciciosExistente.setRespostaCorreta(exercicios.getRespostaCorreta());
         exerciciosExistente.setExplicacao(exercicios.getExplicacao());
-        exerciciosExistente.setPontos(exercicios.getPontos());
-        exerciciosExistente.setLink(exercicios.getLink());
         exerciciosExistente.setStatusExercicios(exercicios.getStatusExercicios() == null || exercicios.getStatusExercicios().isBlank() ? "Nao concluido" : exercicios.getStatusExercicios());
         if (exercicios.getUsuario() != null) {
             exerciciosExistente.setUsuario(exercicios.getUsuario());

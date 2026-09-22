@@ -13,6 +13,13 @@ import java.util.List;
 @Repository
 public interface UsuarioCursoRepository extends JpaRepository<UsuarioCurso, Long> {
 
+    long countByCursoId(Long cursoId);
+
+    List<UsuarioCurso> findAllByCursoId(Long cursoId);
+
+    @Query(value = "SELECT COUNT(*) FROM UsuarioCurso uc JOIN Usuario u ON u.id = uc.usuario_id WHERE uc.curso_id = :cursoId AND UPPER(u.nivel_acesso) IN ('ALUNO','STUDENT')", nativeQuery = true)
+    long countStudentsByCursoId(@Param("cursoId") Long cursoId);
+
     @Modifying
     @Transactional
     @Query(value = "DELETE FROM UsuarioCurso WHERE curso_id = :cursoId", nativeQuery = true)
@@ -30,4 +37,7 @@ public interface UsuarioCursoRepository extends JpaRepository<UsuarioCurso, Long
 
     @Query(value = "SELECT c.* FROM UsuarioCurso uc JOIN Curso c ON uc.curso_id = c.id WHERE uc.usuario_id = :usuarioId", nativeQuery = true)
     List<Object[]> findCursosByUsuarioIdNative(@Param("usuarioId") Long usuarioId);
+
+    @Query("select uc from UsuarioCurso uc where uc.usuario.id = :usuarioId and uc.curso.id = :cursoId")
+    List<UsuarioCurso> findByUsuarioIdAndCursoId(@Param("usuarioId") Long usuarioId, @Param("cursoId") Long cursoId);
 }
