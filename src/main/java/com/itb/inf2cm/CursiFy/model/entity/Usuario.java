@@ -37,6 +37,9 @@ public class Usuario{
     @Column(length = 20, nullable = false)
     private String statusUsuario;
 
+    @Column(nullable = false, columnDefinition = "BIT NOT NULL DEFAULT 0")
+    private boolean professorAprovado = false;
+
     public Long getId() {
         return id;
     }
@@ -103,5 +106,13 @@ public class Usuario{
 
     public void setStatusUsuario(String statusUsuario) {
         this.statusUsuario = statusUsuario;
+    }
+
+    public boolean isProfessorAprovado() {
+        return professorAprovado;
+    }
+
+    public void setProfessorAprovado(boolean professorAprovado) {
+        this.professorAprovado = professorAprovado;
     }
 }
