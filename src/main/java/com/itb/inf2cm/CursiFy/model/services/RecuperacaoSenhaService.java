@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class RecuperacaoSenhaService {
@@ -40,7 +41,7 @@ public class RecuperacaoSenhaService {
                 .orElseThrow(() -> new IllegalArgumentException("Nenhuma conta encontrada com este e-mail."));
 
         String token = UUID.randomUUID().toString();
-        LocalDateTime expiracao = LocalDateTime.now().plusHours(1);
+        LocalDateTime expiracao = com.itb.inf2cm.CursiFy.config.ClockConfig.now().plusHours(1);
 
         RecuperacaoSenha recuperacao = new RecuperacaoSenha();
         recuperacao.setUsuario(usuario);
@@ -71,7 +72,7 @@ public class RecuperacaoSenhaService {
         if (recuperacao.getUsado()) {
             throw new IllegalArgumentException("Este link de recuperação já foi utilizado.");
         }
-        if (LocalDateTime.now().isAfter(recuperacao.getDataExpiracao())) {
+        if (com.itb.inf2cm.CursiFy.config.ClockConfig.now().isAfter(recuperacao.getDataExpiracao())) {
             throw new IllegalArgumentException("Este link de recuperação expirou.");
         }
     }
@@ -83,7 +84,7 @@ public class RecuperacaoSenhaService {
         if (recuperacao.getUsado()) {
             throw new IllegalArgumentException("Este link de recuperação já foi utilizado.");
         }
-        if (LocalDateTime.now().isAfter(recuperacao.getDataExpiracao())) {
+        if (com.itb.inf2cm.CursiFy.config.ClockConfig.now().isAfter(recuperacao.getDataExpiracao())) {
             throw new IllegalArgumentException("Este link de recuperação expirou.");
         }
 
@@ -93,5 +94,34 @@ public class RecuperacaoSenhaService {
 
         recuperacao.setUsado(true);
         recuperacaoSenhaRepository.save(recuperacao);
+    }
+
+    public void enviarCodigoPerfil(Long usuarioId) {
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+        String codigo = String.valueOf(ThreadLocalRandom.current().nextInt(100000, 1000000));
+        RecuperacaoSenha registro = new RecuperacaoSenha();
+        registro.setUsuario(usuario);
+        registro.setToken(codigo);
+        registro.setDataExpiracao(com.itb.inf2cm.CursiFy.config.ClockConfig.now().plusMinutes(10));
+        registro.setUsado(false);
+        recuperacaoSenhaRepository.save(registro);
+        SimpleMailMessage mensagem = new SimpleMailMessage();
+        mensagem.setFrom(remetente);
+        mensagem.setTo(usuario.getEmail());
+        mensagem.setSubject("CursiFy - Confirmação de perfil");
+        mensagem.setText("Seu código para confirmar alterações no perfil é: " + codigo + "\n\nValidade: 10 minutos.");
+        mailSender.send(mensagem);
+    }
+
+    public void validarCodigoPerfil(Long usuarioId, String codigo) {
+        RecuperacaoSenha registro = recuperacaoSenhaRepository.findByToken(codigo)
+                .orElseThrow(() -> new IllegalArgumentException("Código inválido ou expirado."));
+        if (!registro.getUsuario().getId().equals(usuarioId) || registro.getUsado()
+                || com.itb.inf2cm.CursiFy.config.ClockConfig.now().isAfter(registro.getDataExpiracao())) {
+            throw new IllegalArgumentException("Código inválido ou expirado.");
+        }
+        registro.setUsado(true);
+        recuperacaoSenhaRepository.save(registro);
     }
 }

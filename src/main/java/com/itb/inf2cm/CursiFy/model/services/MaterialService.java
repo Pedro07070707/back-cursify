@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class MaterialService {
@@ -21,6 +22,7 @@ public class MaterialService {
         if (material.getStatusMaterial() == null || material.getStatusMaterial().isBlank()) {
             material.setStatusMaterial("Nao concluido");
         }
+        material.setLinks(material.getLinks() == null ? new ArrayList<>() : material.getLinks());
         return materialRepository.save(material);
     }
 
@@ -34,7 +36,7 @@ public class MaterialService {
         materialExistente.setTitulo(material.getTitulo());
         materialExistente.setSubtitulo(material.getSubtitulo());
         materialExistente.setConteudo(material.getConteudo());
-        materialExistente.setLink(material.getLink());
+        materialExistente.setLinks(material.getLinks() == null ? new ArrayList<>() : material.getLinks());
         materialExistente.setStatusMaterial(material.getStatusMaterial() == null || material.getStatusMaterial().isBlank() ? "Nao concluido" : material.getStatusMaterial());
         if (material.getUsuario() != null) {
             materialExistente.setUsuario(material.getUsuario());

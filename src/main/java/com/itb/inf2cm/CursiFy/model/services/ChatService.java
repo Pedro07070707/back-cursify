@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
 import com.itb.inf2cm.CursiFy.model.repository.CursoRepository;
+import com.itb.inf2cm.CursiFy.model.repository.UsuarioRepository;
 
 @Service
 public class ChatService {
@@ -21,6 +22,9 @@ public class ChatService {
     @Autowired
     private CursoRepository cursoRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public List<Chat> findAll() {
         return chatRepository.findAll();
     }
@@ -29,15 +33,35 @@ public class ChatService {
         if (chat.getMensagem() == null || chat.getRemetenteId() == null || chat.getDestinatarioId() == null) {
             throw new IllegalArgumentException("Mensagem, remetenteId e destinatarioId são obrigatórios");
         }
+        String remetenteNivel = usuarioRepository.findById(chat.getRemetenteId())
+                .map(u -> u.getNivelAcesso() == null ? "" : u.getNivelAcesso().trim().toUpperCase())
+                .orElse("");
+        String destinatarioNivel = usuarioRepository.findById(chat.getDestinatarioId())
+                .map(u -> u.getNivelAcesso() == null ? "" : u.getNivelAcesso().trim().toUpperCase())
+                .orElse("");
+        boolean professorAluno = ("PROFESSOR".equals(remetenteNivel) && "ALUNO".equals(destinatarioNivel))
+                || ("ALUNO".equals(remetenteNivel) && "PROFESSOR".equals(destinatarioNivel));
+        if (!professorAluno) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN,
+                    "O chat funciona somente entre professor e aluno"
+            );
+        }
         Object[] shared = usuarioCursoRepository.findSharedCourse(chat.getRemetenteId(), chat.getDestinatarioId());
-        if (shared == null) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.FORBIDDEN, "Usuários não compartilham um curso");
+        if (shared == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN,
+                    "Professor e aluno precisam compartilhar uma matrícula ativa"
+            );
+        }
         chat.setCursoId(((Number) shared[0]).longValue());
         chat.setCursoNome(String.valueOf(shared[1]));
         chat.setUsuarioId(chat.getRemetenteId());
         chat.getMensagem().setRemetenteId(chat.getRemetenteId());
         chat.getMensagem().setDestinatarioId(chat.getDestinatarioId());
         chat.setStatusChat("Ativo");
-        if (chat.getDataChat() == null) chat.setDataChat(java.time.LocalDateTime.now());
+        chat.setDataChat(com.itb.inf2cm.CursiFy.config.ClockConfig.now());
+        chat.getMensagem().setDataMensagem(com.itb.inf2cm.CursiFy.config.ClockConfig.now());
         return chatRepository.save(chat);
     }
 

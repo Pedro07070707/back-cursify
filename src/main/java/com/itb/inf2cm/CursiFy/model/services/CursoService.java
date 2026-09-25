@@ -31,10 +31,9 @@ public class CursoService {
     }
 
     public Curso save(Curso curso) {
-        if (curso.getStatusCurso() == null || curso.getStatusCurso().isBlank()) {
-            curso.setStatusCurso("Ativo");
-        }
-        curso.setDataCriacao(java.time.LocalDateTime.now());
+        if (curso.getStatusCurso() == null || curso.getStatusCurso().isBlank()) curso.setStatusCurso("Pendente");
+        if (curso.getCursoAprovado() == null) curso.setCursoAprovado("Pendente");
+        curso.setDataCriacao(com.itb.inf2cm.CursiFy.config.ClockConfig.now());
         Curso saved = cursoRepository.save(curso);
 
         if (curso.getProfessorId() != null) {
@@ -58,6 +57,11 @@ public class CursoService {
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
         cursoExistente.setCursoAprovado(curso.getCursoAprovado());
+        cursoExistente.setMotivoRecusa(curso.getMotivoRecusa());
+        if ("Aprovado".equalsIgnoreCase(cursoExistente.getCursoAprovado())) {
+            cursoExistente.setStatusCurso("Ativo");
+            cursoExistente.setMotivoRecusa(null);
+        }
         return cursoRepository.save(cursoExistente);
     }
 

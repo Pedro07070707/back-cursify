@@ -35,4 +35,16 @@ public class RecuperacaoSenhaController {
         recuperacaoSenhaService.redefinirSenha(body.get("token"), body.get("novaSenha"));
         return ResponseEntity.ok(Map.of("message", "Senha redefinida com sucesso."));
     }
+
+    @PostMapping("/perfil/solicitar-codigo")
+    public ResponseEntity<Map<String, String>> solicitarCodigoPerfil(@RequestBody Map<String, Long> body) {
+        recuperacaoSenhaService.enviarCodigoPerfil(body.get("usuarioId"));
+        return ResponseEntity.ok(Map.of("message", "Código enviado para o e-mail cadastrado."));
+    }
+
+    @PostMapping("/perfil/confirmar")
+    public ResponseEntity<Map<String, String>> confirmarCodigoPerfil(@RequestBody Map<String, Object> body) {
+        recuperacaoSenhaService.validarCodigoPerfil(Long.valueOf(String.valueOf(body.get("usuarioId"))), String.valueOf(body.get("codigo")));
+        return ResponseEntity.ok(Map.of("message", "Código confirmado."));
+    }
 }

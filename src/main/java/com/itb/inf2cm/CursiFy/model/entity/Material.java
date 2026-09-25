@@ -2,6 +2,8 @@ package com.itb.inf2cm.CursiFy.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Material")
@@ -20,8 +22,14 @@ public class Material {
     @Column(length = 500, nullable = false)
     private String conteudo;
 
-    @Column(length = 200, nullable = true)
-    private String link;
+    @ElementCollection
+    @CollectionTable(name = "Material_links", joinColumns = @JoinColumn(name = "material_id"))
+    @OrderColumn(name = "ordem")
+    @AttributeOverrides({
+            @AttributeOverride(name = "titulo", column = @Column(name = "titulo", length = 150, nullable = false)),
+            @AttributeOverride(name = "url", column = @Column(name = "url", length = 500, nullable = false))
+    })
+    private List<MaterialLink> links = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "usuario_id", nullable = false)
@@ -77,13 +85,8 @@ public class Material {
         this.conteudo = conteudo;
     }
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
+    public List<MaterialLink> getLinks() { return links; }
+    public void setLinks(List<MaterialLink> links) { this.links = links == null ? new ArrayList<>() : links; }
 
     public Usuario getUsuario() {
         return usuario;

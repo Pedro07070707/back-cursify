@@ -4,6 +4,7 @@ import com.itb.inf2cm.CursiFy.model.entity.Exercicios;
 import com.itb.inf2cm.CursiFy.model.repository.ExerciciosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,9 +18,19 @@ public class ExerciciosService {
         return exerciciosRepository.findAll();
     }
 
+    @Transactional
     public Exercicios save(Exercicios exercicios) {
+        if (exercicios.getEnunciado() == null || exercicios.getEnunciado().isBlank()) {
+            throw new IllegalArgumentException("O exercício precisa ter um enunciado.");
+        }
         if (exercicios.getStatusExercicios() == null || exercicios.getStatusExercicios().isBlank()) {
             exercicios.setStatusExercicios("Nao concluido");
+        }
+        if (exercicios.getAlternativas() == null || exercicios.getAlternativas().stream().noneMatch(value -> value != null && !value.isBlank())) {
+            throw new IllegalArgumentException("O exercício precisa ter pelo menos uma alternativa.");
+        }
+        if (exercicios.getRespostaCorreta() == null || exercicios.getRespostaCorreta().isBlank()) {
+            throw new IllegalArgumentException("O exercício precisa ter uma resposta correta.");
         }
         return exerciciosRepository.save(exercicios);
     }

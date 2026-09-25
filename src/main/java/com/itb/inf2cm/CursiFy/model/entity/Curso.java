@@ -21,7 +21,7 @@ public class Curso{
     @Column(length = 100, nullable = false)
     private String nome;
 
-    @Column(length = 100, nullable = false)
+    @Column(length = 2000, nullable = false)
     private String descricao;
 
     @Column(length = 100, nullable = false)
@@ -39,11 +39,14 @@ public class Curso{
     @Column(length = 20, nullable = false)
     private String statusCurso;
 
-    @Column(name = "curso_aprovado", nullable = false, columnDefinition = "TINYINT NOT NULL")
-    private Integer cursoAprovado = 0;
+    @Column(name = "curso_aprovado", length = 20, nullable = false)
+    private String cursoAprovado = "Pendente";
 
     @Column(name = "numero_alunos", nullable = false)
     private Integer numeroAlunos = 0;
+
+    @Column(name = "motivo_recusa", length = 2000)
+    private String motivoRecusa;
 
     @Transient
     private Long professorId;
@@ -120,11 +123,14 @@ public class Curso{
         this.professorId = professorId;
     }
 
-    public Integer getCursoAprovado() {
+    public String getCursoAprovado() {
         return cursoAprovado;
     }
 
-    public void setCursoAprovado(Integer cursoAprovado) {
-        this.cursoAprovado = cursoAprovado == null ? 0 : cursoAprovado;
+    public void setCursoAprovado(String cursoAprovado) {
+        this.cursoAprovado = cursoAprovado == null || cursoAprovado.isBlank() ? "Pendente" : cursoAprovado;
     }
+
+    public String getMotivoRecusa() { return motivoRecusa; }
+    public void setMotivoRecusa(String motivoRecusa) { this.motivoRecusa = motivoRecusa; }
 }

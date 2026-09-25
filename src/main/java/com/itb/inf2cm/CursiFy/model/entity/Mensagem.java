@@ -30,7 +30,7 @@ public class Mensagem {
 
     @PrePersist
     private void defaults() {
-        if (dataMensagem == null) dataMensagem = LocalDateTime.now();
+        if (dataMensagem == null) dataMensagem = com.itb.inf2cm.CursiFy.config.ClockConfig.now();
         if (statusMensagem == null || statusMensagem.isBlank()) statusMensagem = "Enviado";
     }
 

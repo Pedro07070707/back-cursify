@@ -1,6 +1,7 @@
 package com.itb.inf2cm.CursiFy.model.entity;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 
@@ -44,11 +45,14 @@ public class Usuario{
     @Column(length = 20, nullable = false)
     private String statusUsuario;
 
-    @Column(name = "professor_aprovado", nullable = false, columnDefinition = "TINYINT NOT NULL")
-    private Integer professorAprovado = 0;
+    @Column(name = "professor_aprovado", length = 20, nullable = false)
+    private String professorAprovado = "Pendente";
 
     @Column(name = "tema_preferido", length = 10, nullable = false)
     private String temaPreferido = "light";
+
+    @Transient
+    private String codigoAdmin;
 
     public Long getId() {
         return id;
@@ -122,13 +126,16 @@ public class Usuario{
         this.statusUsuario = statusUsuario;
     }
 
-    public Integer getProfessorAprovado() {
+    public String getProfessorAprovado() {
         return professorAprovado;
     }
 
-    public void setProfessorAprovado(Integer professorAprovado) {
-        this.professorAprovado = professorAprovado == null ? 0 : professorAprovado;
+    public void setProfessorAprovado(String professorAprovado) {
+        this.professorAprovado = professorAprovado == null || professorAprovado.isBlank() ? "Pendente" : professorAprovado;
     }
     public String getTemaPreferido() { return temaPreferido; }
     public void setTemaPreferido(String temaPreferido) { this.temaPreferido = "dark".equalsIgnoreCase(temaPreferido) ? "dark" : "light"; }
+    @JsonIgnore
+    public String getCodigoAdmin() { return codigoAdmin; }
+    public void setCodigoAdmin(String codigoAdmin) { this.codigoAdmin = codigoAdmin; }
 }

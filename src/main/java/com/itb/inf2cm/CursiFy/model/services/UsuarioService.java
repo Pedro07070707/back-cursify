@@ -37,13 +37,18 @@ public class UsuarioService {
     }
 
     public Usuario save(Usuario usuario) {
+        if ("ADMIN".equalsIgnoreCase(usuario.getNivelAcesso()) && !"260926".equals(usuario.getCodigoAdmin())) {
+            throw new IllegalArgumentException("Código de administrador inválido.");
+        }
         validarCpf(usuario);
+        if (usuarioRepository.existsByCpf(usuario.getCpf())) {
+            throw new IllegalArgumentException("Este CPF já está cadastrado.");
+        }
         if (usuario.getStatusUsuario() == null || usuario.getStatusUsuario().isBlank()) {
             usuario.setStatusUsuario("Ativo");
         }
-        if (usuario.getDataCadastro() == null) {
-            usuario.setDataCadastro(LocalDateTime.now());
-        }
+        // Nunca confiar no horario enviado pelo navegador (normalmente UTC).
+        usuario.setDataCadastro(com.itb.inf2cm.CursiFy.config.ClockConfig.now());
         usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
         return usuarioRepository.save(usuario);
     }
@@ -60,6 +65,9 @@ public class UsuarioService {
     public Usuario update(Long id, Usuario usuario) {
         Usuario usuarioExistente = findById(id);
         validarCpf(usuario);
+        if (usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), id)) {
+            throw new IllegalArgumentException("Este CPF já está cadastrado.");
+        }
         usuarioExistente.setNome(usuario.getNome());
         usuarioExistente.setEmail(usuario.getEmail());
         atualizarSenha(usuarioExistente, usuario.getSenha());
@@ -67,17 +75,17 @@ public class UsuarioService {
         String requestedRole = usuario.getNivelAcesso() == null ? "ALUNO" : usuario.getNivelAcesso().trim().toUpperCase();
         boolean switchingToStudent = "ALUNO".equals(requestedRole) || "STUDENT".equals(requestedRole);
         boolean requestingTeacher = "PROFESSOR".equals(requestedRole) || "TEACHER".equals(requestedRole);
-        boolean approvedTeacher = (usuarioExistente.getProfessorAprovado() != null && usuarioExistente.getProfessorAprovado() == 1)
-                || (usuario.getProfessorAprovado() != null && usuario.getProfessorAprovado() == 1);
+        boolean approvedTeacher = "Aprovado".equalsIgnoreCase(usuarioExistente.getProfessorAprovado())
+                || "Aprovado".equalsIgnoreCase(usuario.getProfessorAprovado());
         if (switchingToStudent) {
             usuarioExistente.setNivelAcesso("ALUNO");
-            usuarioExistente.setProfessorAprovado(0);
+            usuarioExistente.setProfessorAprovado("Pendente");
         } else if (requestingTeacher && approvedTeacher) {
             usuarioExistente.setNivelAcesso("PROFESSOR");
-            usuarioExistente.setProfessorAprovado(1);
+            usuarioExistente.setProfessorAprovado("Aprovado");
         } else if (requestingTeacher) {
             usuarioExistente.setNivelAcesso("ALUNO");
-            usuarioExistente.setProfessorAprovado(0);
+            usuarioExistente.setProfessorAprovado("Pendente");
         } else {
             usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
         }
