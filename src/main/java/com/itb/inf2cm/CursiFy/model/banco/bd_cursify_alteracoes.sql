@@ -36,3 +36,6 @@ BEGIN
     EXEC('ALTER TABLE dbo.Material_links ALTER COLUMN ordem INT NOT NULL');
 END;
 GO
+
+ALTER TABLE Material DROP COLUMN link_titulo;
+ALTER TABLE Material DROP COLUMN link;

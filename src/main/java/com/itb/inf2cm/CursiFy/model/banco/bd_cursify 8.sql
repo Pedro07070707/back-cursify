@@ -54,8 +54,8 @@ CREATE TABLE Material
     titulo VARCHAR(100) NOT NULL,
     subtitulo VARCHAR(100) NOT NULL,
     conteudo VARCHAR(500) NOT NULL,
-    link_titulo VARCHAR(150) NULL,
-    link VARCHAR(200) NULL,
+    -- !! ALTERACAO v9: colunas link_titulo e link removidas da tabela Material.
+    -- Os links agora sao armazenados exclusivamente na tabela Material_links.
     usuario_id INT NOT NULL,
     curso_id INT NOT NULL,
     status_material VARCHAR(20) NOT NULL,

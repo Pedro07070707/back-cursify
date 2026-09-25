@@ -54,7 +54,7 @@ public class CursoService {
         cursoExistente.setDescricao(curso.getDescricao());
         cursoExistente.setCategoria(curso.getCategoria());
         cursoExistente.setCargaHoraria(curso.getCargaHoraria());
-        cursoExistente.setDataCriacao(curso.getDataCriacao());
+        if (curso.getDataCriacao() != null) cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
         cursoExistente.setCursoAprovado(curso.getCursoAprovado());
         cursoExistente.setMotivoRecusa(curso.getMotivoRecusa());
