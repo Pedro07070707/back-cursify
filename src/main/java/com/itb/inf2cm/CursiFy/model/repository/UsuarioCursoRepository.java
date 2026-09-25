@@ -40,4 +40,10 @@ public interface UsuarioCursoRepository extends JpaRepository<UsuarioCurso, Long
 
     @Query("select uc from UsuarioCurso uc where uc.usuario.id = :usuarioId and uc.curso.id = :cursoId")
     List<UsuarioCurso> findByUsuarioIdAndCursoId(@Param("usuarioId") Long usuarioId, @Param("cursoId") Long cursoId);
+
+    @Query(value = "SELECT TOP 1 uc1.curso_id, c.nome FROM UsuarioCurso uc1 JOIN UsuarioCurso uc2 ON uc1.curso_id = uc2.curso_id JOIN Curso c ON c.id = uc1.curso_id WHERE uc1.usuario_id = :userA AND uc2.usuario_id = :userB", nativeQuery = true)
+    Object[] findSharedCourse(@Param("userA") Long userA, @Param("userB") Long userB);
+
+    @Query(value = "SELECT DISTINCT u.id, u.nome, u.email, u.nivel_acesso, c.nome FROM Usuario u JOIN UsuarioCurso other ON other.usuario_id = u.id JOIN UsuarioCurso mine ON mine.curso_id = other.curso_id JOIN Curso c ON c.id = mine.curso_id JOIN Usuario me ON me.id = mine.usuario_id WHERE me.id = :userId AND u.id <> :userId AND ((UPPER(me.nivel_acesso) IN ('ALUNO','STUDENT') AND UPPER(u.nivel_acesso) IN ('PROFESSOR','TEACHER')) OR (UPPER(me.nivel_acesso) IN ('PROFESSOR','TEACHER') AND UPPER(u.nivel_acesso) IN ('ALUNO','STUDENT')))", nativeQuery = true)
+    List<Object[]> findChatContacts(@Param("userId") Long userId);
 }

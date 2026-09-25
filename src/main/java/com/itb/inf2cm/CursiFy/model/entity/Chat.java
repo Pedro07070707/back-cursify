@@ -19,6 +19,22 @@ public class Chat {
     @Column(length = 50, nullable = false)
     private String remetente;
 
+    @Column(name = "remetente_id", nullable = false)
+    private Long remetenteId;
+
+    /* Compatibilidade com o esquema legado do Somee. */
+    @Column(name = "usuario_id")
+    private Long usuarioId;
+
+    @Column(name = "destinatario_id", nullable = false)
+    private Long destinatarioId;
+
+    @Column(name = "curso_id")
+    private Long cursoId;
+
+    @Transient
+    private String cursoNome;
+
     @Column(nullable = false)
     private LocalDateTime dataChat;
 
@@ -42,6 +58,17 @@ public class Chat {
     public void setRemetente(String remetente) {
         this.remetente = remetente;
     }
+
+    public Long getRemetenteId() { return remetenteId; }
+    public void setRemetenteId(Long remetenteId) { this.remetenteId = remetenteId; }
+    public Long getUsuarioId() { return usuarioId; }
+    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
+    public Long getDestinatarioId() { return destinatarioId; }
+    public void setDestinatarioId(Long destinatarioId) { this.destinatarioId = destinatarioId; }
+    public Long getCursoId() { return cursoId; }
+    public void setCursoId(Long cursoId) { this.cursoId = cursoId; }
+    public String getCursoNome() { return cursoNome; }
+    public void setCursoNome(String cursoNome) { this.cursoNome = cursoNome; }
 
     public LocalDateTime getDataChat() {
         return dataChat;

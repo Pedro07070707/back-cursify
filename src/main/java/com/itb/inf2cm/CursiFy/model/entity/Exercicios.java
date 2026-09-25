@@ -13,15 +13,6 @@ public class Exercicios {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 100, nullable = false)
-    private String titulo;
-
-    @Column(length = 100, nullable = false)
-    private String subtitulo;
-
-    @Column(length = 500, nullable = false)
-    private String conteudo;
-
     @Column(length = 2000, nullable = false)
     private String enunciado;
 
@@ -62,30 +53,6 @@ public class Exercicios {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getSubtitulo() {
-        return subtitulo;
-    }
-
-    public void setSubtitulo(String subtitulo) {
-        this.subtitulo = subtitulo;
-    }
-
-    public String getConteudo() {
-        return conteudo;
-    }
-
-    public void setConteudo(String conteudo) {
-        this.conteudo = conteudo;
     }
 
     public String getEnunciado() { return enunciado; }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.Base64;
 
 @RestController
 @RequestMapping("/api/v1/usuario")
@@ -38,6 +40,25 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.update(id, usuario));
     }
 
+    @PutMapping("/{id}/tema")
+    public ResponseEntity<Map<String, String>> updateTheme(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        Usuario usuario = usuarioService.findById(id);
+        usuario.setTemaPreferido(body.get("temaPreferido"));
+        usuarioService.saveTheme(usuario);
+        return ResponseEntity.ok(Map.of("temaPreferido", usuario.getTemaPreferido()));
+    }
+
+    @PutMapping("/{id}/perfil")
+    public ResponseEntity<Usuario> updateProfile(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        Usuario usuario = usuarioService.findById(id);
+        if (body.get("nome") != null) usuario.setNome(String.valueOf(body.get("nome")));
+        if (body.get("bio") != null) usuario.setBio(String.valueOf(body.get("bio")));
+        if (body.get("temaPreferido") != null) usuario.setTemaPreferido(String.valueOf(body.get("temaPreferido")));
+        if (body.get("foto") != null && !String.valueOf(body.get("foto")).isBlank()) usuario.setFoto(Base64.getDecoder().decode(String.valueOf(body.get("foto"))));
+        if (body.get("fotoCapa") != null && !String.valueOf(body.get("fotoCapa")).isBlank()) usuario.setFotoCapa(Base64.getDecoder().decode(String.valueOf(body.get("fotoCapa"))));
+        return ResponseEntity.ok(usuarioService.saveTheme(usuario));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         usuarioService.delete(id);
@@ -54,12 +75,17 @@ public class UsuarioController {
         if (!"Ativo".equals(u.getStatusUsuario())) {
             return ResponseEntity.status(403).body(Map.of("message", "Sua conta foi desativada. Entre em contato com o administrador."));
         }
-        return ResponseEntity.ok(Map.of(
-                "id", u.getId(),
-                "nome", u.getNome(),
-                "email", u.getEmail(),
-                "cpf", u.getCpf(),
-                "nivelAcesso", u.getNivelAcesso()
-        ));
+        Map<String, Object> resposta = new HashMap<>();
+        resposta.put("id", u.getId());
+        resposta.put("nome", u.getNome());
+        resposta.put("email", u.getEmail());
+        resposta.put("cpf", u.getCpf());
+        resposta.put("nivelAcesso", u.getNivelAcesso());
+        resposta.put("professorAprovado", u.isProfessorAprovado());
+        resposta.put("bio", u.getBio());
+        resposta.put("foto", u.getFoto());
+        resposta.put("fotoCapa", u.getFotoCapa());
+        resposta.put("temaPreferido", u.getTemaPreferido());
+        return ResponseEntity.ok(resposta);
     }
 }

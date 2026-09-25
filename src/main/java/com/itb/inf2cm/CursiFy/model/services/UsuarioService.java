@@ -1,7 +1,6 @@
 package com.itb.inf2cm.CursiFy.model.services;
 
 import com.itb.inf2cm.CursiFy.model.entity.Usuario;
-import com.itb.inf2cm.CursiFy.model.repository.AtividadesRepository;
 import com.itb.inf2cm.CursiFy.model.repository.ExerciciosRepository;
 import com.itb.inf2cm.CursiFy.model.repository.MaterialRepository;
 import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
@@ -29,8 +28,6 @@ public class UsuarioService {
     @Autowired
     private ExerciciosRepository exerciciosRepository;
 
-    @Autowired
-    private AtividadesRepository atividadesRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -54,6 +51,10 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o Id" + id));
     }
 
+    public Usuario saveTheme(Usuario usuario) {
+        return usuarioRepository.save(usuario);
+    }
+
     public Usuario update(Long id, Usuario usuario) {
         Usuario usuarioExistente = findById(id);
         validarCpf(usuario);
@@ -61,8 +62,28 @@ public class UsuarioService {
         usuarioExistente.setEmail(usuario.getEmail());
         atualizarSenha(usuarioExistente, usuario.getSenha());
         usuarioExistente.setCpf(usuario.getCpf());
-        usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
+        String requestedRole = usuario.getNivelAcesso() == null ? "ALUNO" : usuario.getNivelAcesso().trim().toUpperCase();
+        boolean switchingToStudent = "ALUNO".equals(requestedRole) || "STUDENT".equals(requestedRole);
+        boolean requestingTeacher = "PROFESSOR".equals(requestedRole) || "TEACHER".equals(requestedRole);
+        boolean approvedTeacher = usuarioExistente.isProfessorAprovado() || usuario.isProfessorAprovado();
+        if (switchingToStudent) {
+            usuarioExistente.setNivelAcesso("ALUNO");
+            usuarioExistente.setProfessorAprovado(false);
+        } else if (requestingTeacher && approvedTeacher) {
+            usuarioExistente.setNivelAcesso("PROFESSOR");
+            usuarioExistente.setProfessorAprovado(true);
+        } else if (requestingTeacher) {
+            usuarioExistente.setNivelAcesso("ALUNO");
+            usuarioExistente.setProfessorAprovado(false);
+        } else {
+            usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
+        }
         usuarioExistente.setFoto(usuario.getFoto());
+        usuarioExistente.setBio(usuario.getBio());
+        usuarioExistente.setFotoCapa(usuario.getFotoCapa());
+        usuarioExistente.setTemaPreferido(usuario.getTemaPreferido());
+        /* O administrador altera esta flag ao aprovar/rejeitar um professor. */
+        usuarioExistente.setProfessorAprovado(usuario.isProfessorAprovado());
         usuarioExistente.setStatusUsuario(normalizarStatus(usuario.getStatusUsuario()));
         return usuarioRepository.save(usuarioExistente);
     }
@@ -70,7 +91,6 @@ public class UsuarioService {
     public void delete(Long id) {
         materialRepository.deleteByUsuarioIdNative(id);
         exerciciosRepository.deleteByUsuarioIdNative(id);
-        atividadesRepository.deleteByUsuarioIdNative(id);
         usuarioCursoRepository.deleteByUsuarioIdNative(id);
         usuarioRepository.delete(findById(id));
     }

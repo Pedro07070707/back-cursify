@@ -1,7 +1,6 @@
 package com.itb.inf2cm.CursiFy.model.services;
 
 import com.itb.inf2cm.CursiFy.model.entity.Curso;
-import com.itb.inf2cm.CursiFy.model.repository.AtividadesRepository;
 import com.itb.inf2cm.CursiFy.model.repository.CursoRepository;
 import com.itb.inf2cm.CursiFy.model.repository.ExerciciosRepository;
 import com.itb.inf2cm.CursiFy.model.repository.MaterialRepository;
@@ -26,8 +25,6 @@ public class CursoService {
     @Autowired
     private ExerciciosRepository exerciciosRepository;
 
-    @Autowired
-    private AtividadesRepository atividadesRepository;
 
     public List<Curso> findAll() {
         return cursoRepository.findAll();
@@ -64,7 +61,6 @@ public class CursoService {
     public void delete(Long id) {
         materialRepository.deleteByCursoIdNative(id);
         exerciciosRepository.deleteByCursoIdNative(id);
-        atividadesRepository.deleteByCursoIdNative(id);
         usuarioCursoRepository.deleteByCursoIdNative(id);
         cursoRepository.delete(findById(id));
     }

@@ -12,6 +12,13 @@ public class Mensagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "remetente_id", nullable = false)
+    private Long remetenteId;
+
+    @Column(name = "destinatario_id")
+    private Long destinatarioId;
+
+
     @Column(length = 500, nullable = false)
     private String conteudo;
 
@@ -34,6 +41,11 @@ public class Mensagem {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public Long getRemetenteId() { return remetenteId; }
+    public void setRemetenteId(Long remetenteId) { this.remetenteId = remetenteId; }
+    public Long getDestinatarioId() { return destinatarioId; }
+    public void setDestinatarioId(Long destinatarioId) { this.destinatarioId = destinatarioId; }
 
     public String getConteudo() {
         return conteudo;

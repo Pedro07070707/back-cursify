@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import com.itb.inf2cm.CursiFy.model.repository.UsuarioCursoRepository;
 
 @RestController
 @RequestMapping("/api/v1/chat")
@@ -16,6 +17,16 @@ public class ChatController {
 
     @Autowired
     private ChatService chatService;
+
+    @Autowired
+    private UsuarioCursoRepository usuarioCursoRepository;
+
+    @GetMapping("/contatos/{userId}")
+    public ResponseEntity<List<Map<String, Object>>> contatos(@PathVariable Long userId) {
+        return ResponseEntity.ok(usuarioCursoRepository.findChatContacts(userId).stream().map(row -> Map.of(
+                "id", row[0], "nome", row[1], "email", row[2], "nivelAcesso", row[3], "cursoNome", row[4]
+        )).toList());
+    }
 
     @GetMapping
     public ResponseEntity <List<Chat>> findAll() {
@@ -51,6 +62,11 @@ public class ChatController {
                     )
             );
         }
+    }
+
+    @GetMapping("/conversa/{userA}/{userB}")
+    public ResponseEntity<List<Chat>> conversa(@PathVariable Long userA, @PathVariable Long userB) {
+        return ResponseEntity.ok(chatService.findConversation(userA, userB));
     }
 
     @PutMapping("/{id}")

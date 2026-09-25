@@ -31,6 +31,13 @@ public class Usuario{
     @Column(nullable = true)
     private byte[] foto;
 
+    @Column(length = 2000)
+    private String bio;
+
+    @Lob
+    @Column(name = "foto_capa")
+    private byte[] fotoCapa;
+
     @Column(nullable = false)
     private LocalDateTime dataCadastro;
 
@@ -39,6 +46,9 @@ public class Usuario{
 
     @Column(nullable = false, columnDefinition = "BIT NOT NULL DEFAULT 0")
     private boolean professorAprovado = false;
+
+    @Column(name = "tema_preferido", length = 10, nullable = false)
+    private String temaPreferido = "light";
 
     public Long getId() {
         return id;
@@ -91,6 +101,10 @@ public class Usuario{
     public byte[] getFoto() { return foto; }
 
     public void setFoto(byte[] foto) { this.foto = foto; }
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
+    public byte[] getFotoCapa() { return fotoCapa; }
+    public void setFotoCapa(byte[] fotoCapa) { this.fotoCapa = fotoCapa; }
 
     public LocalDateTime getDataCadastro() {
         return dataCadastro;
@@ -115,4 +129,6 @@ public class Usuario{
     public void setProfessorAprovado(boolean professorAprovado) {
         this.professorAprovado = professorAprovado;
     }
+    public String getTemaPreferido() { return temaPreferido; }
+    public void setTemaPreferido(String temaPreferido) { this.temaPreferido = "dark".equalsIgnoreCase(temaPreferido) ? "dark" : "light"; }
 }

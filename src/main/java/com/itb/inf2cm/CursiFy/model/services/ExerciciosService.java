@@ -31,9 +31,6 @@ public class ExerciciosService {
 
     public Exercicios update(Long id, Exercicios exercicios) {
         Exercicios exerciciosExistente = findById(id);
-        exerciciosExistente.setTitulo(exercicios.getTitulo());
-        exerciciosExistente.setSubtitulo(exercicios.getSubtitulo());
-        exerciciosExistente.setConteudo(exercicios.getConteudo());
         exerciciosExistente.setEnunciado(exercicios.getEnunciado());
         exerciciosExistente.setAlternativas(exercicios.getAlternativas());
         exerciciosExistente.setRespostaCorreta(exercicios.getRespostaCorreta());
