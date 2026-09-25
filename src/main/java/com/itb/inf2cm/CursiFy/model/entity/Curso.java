@@ -39,6 +39,9 @@ public class Curso{
     @Column(length = 20, nullable = false)
     private String statusCurso;
 
+    @Column(name = "curso_aprovado", nullable = false, columnDefinition = "TINYINT NOT NULL")
+    private Integer cursoAprovado = 0;
+
     @Column(name = "numero_alunos", nullable = false)
     private Integer numeroAlunos = 0;
 
@@ -115,5 +118,13 @@ public class Curso{
 
     public void setProfessorId(Long professorId) {
         this.professorId = professorId;
+    }
+
+    public Integer getCursoAprovado() {
+        return cursoAprovado;
+    }
+
+    public void setCursoAprovado(Integer cursoAprovado) {
+        this.cursoAprovado = cursoAprovado == null ? 0 : cursoAprovado;
     }
 }

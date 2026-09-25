@@ -31,7 +31,9 @@ public class CursoService {
     }
 
     public Curso save(Curso curso) {
-        curso.setStatusCurso("Ativo");
+        if (curso.getStatusCurso() == null || curso.getStatusCurso().isBlank()) {
+            curso.setStatusCurso("Ativo");
+        }
         curso.setDataCriacao(java.time.LocalDateTime.now());
         Curso saved = cursoRepository.save(curso);
 
@@ -55,6 +57,7 @@ public class CursoService {
         cursoExistente.setCargaHoraria(curso.getCargaHoraria());
         cursoExistente.setDataCriacao(curso.getDataCriacao());
         cursoExistente.setStatusCurso(curso.getStatusCurso());
+        cursoExistente.setCursoAprovado(curso.getCursoAprovado());
         return cursoRepository.save(cursoExistente);
     }
 

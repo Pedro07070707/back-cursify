@@ -38,7 +38,9 @@ public class UsuarioService {
 
     public Usuario save(Usuario usuario) {
         validarCpf(usuario);
-        usuario.setStatusUsuario("Ativo");
+        if (usuario.getStatusUsuario() == null || usuario.getStatusUsuario().isBlank()) {
+            usuario.setStatusUsuario("Ativo");
+        }
         if (usuario.getDataCadastro() == null) {
             usuario.setDataCadastro(LocalDateTime.now());
         }
@@ -65,16 +67,17 @@ public class UsuarioService {
         String requestedRole = usuario.getNivelAcesso() == null ? "ALUNO" : usuario.getNivelAcesso().trim().toUpperCase();
         boolean switchingToStudent = "ALUNO".equals(requestedRole) || "STUDENT".equals(requestedRole);
         boolean requestingTeacher = "PROFESSOR".equals(requestedRole) || "TEACHER".equals(requestedRole);
-        boolean approvedTeacher = usuarioExistente.isProfessorAprovado() || usuario.isProfessorAprovado();
+        boolean approvedTeacher = (usuarioExistente.getProfessorAprovado() != null && usuarioExistente.getProfessorAprovado() == 1)
+                || (usuario.getProfessorAprovado() != null && usuario.getProfessorAprovado() == 1);
         if (switchingToStudent) {
             usuarioExistente.setNivelAcesso("ALUNO");
-            usuarioExistente.setProfessorAprovado(false);
+            usuarioExistente.setProfessorAprovado(0);
         } else if (requestingTeacher && approvedTeacher) {
             usuarioExistente.setNivelAcesso("PROFESSOR");
-            usuarioExistente.setProfessorAprovado(true);
+            usuarioExistente.setProfessorAprovado(1);
         } else if (requestingTeacher) {
             usuarioExistente.setNivelAcesso("ALUNO");
-            usuarioExistente.setProfessorAprovado(false);
+            usuarioExistente.setProfessorAprovado(0);
         } else {
             usuarioExistente.setNivelAcesso(usuario.getNivelAcesso());
         }
@@ -83,7 +86,7 @@ public class UsuarioService {
         usuarioExistente.setFotoCapa(usuario.getFotoCapa());
         usuarioExistente.setTemaPreferido(usuario.getTemaPreferido());
         /* O administrador altera esta flag ao aprovar/rejeitar um professor. */
-        usuarioExistente.setProfessorAprovado(usuario.isProfessorAprovado());
+        usuarioExistente.setProfessorAprovado(usuario.getProfessorAprovado());
         usuarioExistente.setStatusUsuario(normalizarStatus(usuario.getStatusUsuario()));
         return usuarioRepository.save(usuarioExistente);
     }

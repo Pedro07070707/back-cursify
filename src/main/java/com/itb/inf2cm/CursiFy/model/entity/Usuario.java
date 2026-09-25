@@ -44,8 +44,8 @@ public class Usuario{
     @Column(length = 20, nullable = false)
     private String statusUsuario;
 
-    @Column(nullable = false, columnDefinition = "BIT NOT NULL DEFAULT 0")
-    private boolean professorAprovado = false;
+    @Column(name = "professor_aprovado", nullable = false, columnDefinition = "TINYINT NOT NULL")
+    private Integer professorAprovado = 0;
 
     @Column(name = "tema_preferido", length = 10, nullable = false)
     private String temaPreferido = "light";
@@ -122,12 +122,12 @@ public class Usuario{
         this.statusUsuario = statusUsuario;
     }
 
-    public boolean isProfessorAprovado() {
+    public Integer getProfessorAprovado() {
         return professorAprovado;
     }
 
-    public void setProfessorAprovado(boolean professorAprovado) {
-        this.professorAprovado = professorAprovado;
+    public void setProfessorAprovado(Integer professorAprovado) {
+        this.professorAprovado = professorAprovado == null ? 0 : professorAprovado;
     }
     public String getTemaPreferido() { return temaPreferido; }
     public void setTemaPreferido(String temaPreferido) { this.temaPreferido = "dark".equalsIgnoreCase(temaPreferido) ? "dark" : "light"; }

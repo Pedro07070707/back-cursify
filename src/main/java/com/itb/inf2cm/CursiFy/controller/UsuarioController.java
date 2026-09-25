@@ -81,7 +81,7 @@ public class UsuarioController {
         resposta.put("email", u.getEmail());
         resposta.put("cpf", u.getCpf());
         resposta.put("nivelAcesso", u.getNivelAcesso());
-        resposta.put("professorAprovado", u.isProfessorAprovado());
+        resposta.put("professorAprovado", u.getProfessorAprovado());
         resposta.put("bio", u.getBio());
         resposta.put("foto", u.getFoto());
         resposta.put("fotoCapa", u.getFotoCapa());
