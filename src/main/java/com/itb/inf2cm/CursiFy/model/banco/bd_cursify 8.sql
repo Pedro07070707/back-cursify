@@ -54,8 +54,6 @@ CREATE TABLE Material
     titulo VARCHAR(100) NOT NULL,
     subtitulo VARCHAR(100) NOT NULL,
     conteudo VARCHAR(500) NOT NULL,
-    -- !! ALTERACAO v9: colunas link_titulo e link removidas da tabela Material.
-    -- Os links agora sao armazenados exclusivamente na tabela Material_links.
     usuario_id INT NOT NULL,
     curso_id INT NOT NULL,
     status_material VARCHAR(20) NOT NULL,
@@ -155,4 +153,4 @@ CREATE TABLE PreferenciaCurso
     FOREIGN KEY (curso_id) REFERENCES Curso(id)
     );
 
-SELECT * FROM Usuario; SELECT * FROM Curso; SELECT * FROM UsuarioCurso; SELECT * FROM Material; SELECT * FROM Exercicios; SELECT * FROM Exercicios_alternativas; SELECT * FROM Mensagem; SELECT * FROM Chat; SELECT * FROM UsuarioChat; SELECT * FROM recuperacaosenha; SELECT * FROM PreferenciaCurso;
+SELECT * FROM Usuario; SELECT * FROM Curso; SELECT * FROM UsuarioCurso; SELECT * FROM Material; SELECT * FROM Material_links; SELECT * FROM Exercicios; SELECT * FROM Exercicios_alternativas; SELECT * FROM Mensagem; SELECT * FROM Chat; SELECT * FROM UsuarioChat; SELECT * FROM recuperacaosenha; SELECT * FROM PreferenciaCurso;

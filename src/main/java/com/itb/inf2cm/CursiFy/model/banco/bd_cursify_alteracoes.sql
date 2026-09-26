@@ -5,7 +5,7 @@ IF COL_LENGTH('dbo.Material', 'link_titulo') IS NULL
     ALTER TABLE dbo.Material ADD link_titulo VARCHAR(150) NULL;
 GO
 
-/* Permite mais de um link por material, mantendo o campo link antigo para compatibilidade. */
+/* Todos os links passam a ser armazenados exclusivamente em Material_links. */
 IF OBJECT_ID('dbo.Material_links', 'U') IS NULL
 BEGIN
     CREATE TABLE dbo.Material_links
@@ -37,5 +37,22 @@ BEGIN
 END;
 GO
 
-ALTER TABLE Material DROP COLUMN link_titulo;
-ALTER TABLE Material DROP COLUMN link;
+/* Migra o link legado antes de remover as colunas antigas de Material. */
+IF COL_LENGTH('dbo.Material', 'link') IS NOT NULL
+BEGIN
+    EXEC('INSERT INTO dbo.Material_links (material_id, ordem, titulo, url)
+          SELECT m.id, 0, COALESCE(NULLIF(m.link_titulo, ''''), ''Abrir link''), m.link
+          FROM dbo.Material m
+          WHERE NULLIF(m.link, '''') IS NOT NULL
+            AND NOT EXISTS (
+                SELECT 1 FROM dbo.Material_links ml
+                WHERE ml.material_id = m.id AND ml.ordem = 0
+            )');
+END;
+GO
+
+IF COL_LENGTH('dbo.Material', 'link_titulo') IS NOT NULL
+    ALTER TABLE dbo.Material DROP COLUMN link_titulo;
+IF COL_LENGTH('dbo.Material', 'link') IS NOT NULL
+    ALTER TABLE dbo.Material DROP COLUMN link;
+GO
