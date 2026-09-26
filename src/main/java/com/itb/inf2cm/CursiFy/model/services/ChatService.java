@@ -39,8 +39,11 @@ public class ChatService {
         String destinatarioNivel = usuarioRepository.findById(chat.getDestinatarioId())
                 .map(u -> u.getNivelAcesso() == null ? "" : u.getNivelAcesso().trim().toUpperCase())
                 .orElse("");
-        boolean professorAluno = ("PROFESSOR".equals(remetenteNivel) && "ALUNO".equals(destinatarioNivel))
-                || ("ALUNO".equals(remetenteNivel) && "PROFESSOR".equals(destinatarioNivel));
+        boolean isProfessor = "PROFESSOR".equals(remetenteNivel) || "TEACHER".equals(remetenteNivel);
+        boolean isAluno = "ALUNO".equals(remetenteNivel) || "STUDENT".equals(remetenteNivel);
+        boolean isProfessorDest = "PROFESSOR".equals(destinatarioNivel) || "TEACHER".equals(destinatarioNivel);
+        boolean isAlunoDest = "ALUNO".equals(destinatarioNivel) || "STUDENT".equals(destinatarioNivel);
+        boolean professorAluno = (isProfessor && isAlunoDest) || (isAluno && isProfessorDest);
         if (!professorAluno) {
             throw new org.springframework.web.server.ResponseStatusException(
                     org.springframework.http.HttpStatus.FORBIDDEN,
@@ -54,8 +57,9 @@ public class ChatService {
                     "Professor e aluno precisam compartilhar uma matrícula ativa"
             );
         }
-        chat.setCursoId(((Number) shared[0]).longValue());
-        chat.setCursoNome(String.valueOf(shared[1]));
+        Object[] row = (shared.length > 0 && shared[0] instanceof Object[]) ? (Object[]) shared[0] : shared;
+        chat.setCursoId(((Number) row[0]).longValue());
+        chat.setCursoNome(String.valueOf(row[1]));
         chat.setUsuarioId(chat.getRemetenteId());
         chat.getMensagem().setRemetenteId(chat.getRemetenteId());
         chat.getMensagem().setDestinatarioId(chat.getDestinatarioId());

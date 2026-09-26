@@ -2,6 +2,7 @@ package com.itb.inf2cm.CursiFy.model.entity;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -137,5 +138,6 @@ public class Usuario{
     public void setTemaPreferido(String temaPreferido) { this.temaPreferido = "dark".equalsIgnoreCase(temaPreferido) ? "dark" : "light"; }
     @JsonIgnore
     public String getCodigoAdmin() { return codigoAdmin; }
+    @JsonProperty("codigoAdmin")
     public void setCodigoAdmin(String codigoAdmin) { this.codigoAdmin = codigoAdmin; }
 }
